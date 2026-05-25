@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "updated": "2026-05-25T15:54:03.872Z",
+  "agents": [
+    {
+      "id": "browser-agent",
+      "name": "Browser Automation Agent",
+      "version": "0.4.16",
+      "description": "A2A agent server for browser automation and web testing using Playwright",
+      "longDescription": "The Browser Automation Agent is a specialized agent-to-agent service that enables other agents \nto interact with web browsers programmatically using Playwright. This agent handles browser \nautomation, web scraping, testing, and interaction tasks, allowing other agents to leverage \npowerful browser capabilities without managing browser instances directly.\n\n## Key Features\n- Automated web page navigation and interaction\n- Web scraping and data extraction from websites\n- Automated testing of web applications\n- Screenshot and PDF generation from web pages\n- Form filling and submission automation\n- JavaScript execution in browser contexts\n- Multi-browser support (Chromium, Firefox, Safari)\n- Mobile browser emulation and responsive testing\n",
+      "image": {
+        "repository": "ghcr.io/inference-gateway/browser-agent",
+        "tag": "0.4.16",
+        "size": "3.42GB"
+      },
+      "author": {
+        "name": "Eden Reich",
+        "email": "eden.reich@gmail.com",
+        "url": "https://github.com/inference-gateway"
+      },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/inference-gateway/browser-agent",
+      "repository": "https://github.com/inference-gateway/browser-agent",
+      "documentation": "https://docs.inference-gateway.com",
+      "categories": [
+        "browser",
+        "automation"
+      ],
+      "tags": [
+        "a2a",
+        "multi-agent"
+      ]
+    },
+    {
+      "id": "documentation-agent",
+      "name": "Documentation Agent for Context7",
+      "version": "0.2.25",
+      "description": "A2A agent server that provides Context7-style documentation capabilities for your agents",
+      "longDescription": "The Documentation Server is a specialized agent-to-agent service that provides on-demand access \nto comprehensive technical documentation indexed on Context7. Other agents can query this server to \nretrieve documentation for any library, framework, tool, or technology available in the Context7 \ndocumentation index. It acts as a centralized knowledge base that enables agents to access accurate, \nup-to-date documentation without requiring local storage or manual updates.\n\n## Key Features\n- Instant documentation retrieval for thousands of indexed technologies\n- API reference documentation for popular libraries and frameworks\n- Tool usage guides and best practices\n- Programming language documentation and specifications\n- Cloud platform and service documentation\n- Version-specific documentation support\n- Contextual search and intelligent query processing\n",
+      "image": {
+        "repository": "ghcr.io/inference-gateway/documentation-agent",
+        "tag": "0.2.25",
+        "size": "56.2MB"
+      },
+      "author": {
+        "name": "Eden Reich",
+        "email": "eden.reich@gmail.com"
+      },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/inference-gateway/documentation-agent",
+      "repository": "https://github.com/inference-gateway/documentation-agent",
+      "documentation": "https://docs.inference-gateway.com",
+      "categories": [
+        "documentation",
+        "agent-to-agent",
+        "context7"
+      ],
+      "tags": [
+        "a2a",
+        "documentation",
+        "context7",
+        "multi-agent",
+        "autonomous",
+        "api-docs"
+      ]
+    },
+    {
+      "id": "google-calendar-agent",
+      "name": "Google Calendar Management Agent",
+      "version": "0.4.23",
+      "description": "A2A agent server enabling Google Calendar scheduling, retrieval, and automation",
+      "longDescription": "The Google Calendar Agent is a specialized agent-to-agent service that enables other agents \nto interact with Google Calendar programmatically. This agent handles authentication, event \nmanagement, scheduling, and calendar queries, allowing other agents to integrate calendar \nfunctionality without managing Google API complexities directly.\n\n## Key Features\n- Event creation, modification, and deletion via agent requests\n- Calendar availability checking and conflict detection\n- Meeting scheduling with multiple participants\n- Recurring events and series management\n- Calendar sharing and permission management\n- Time zone handling and conversion\n- Natural language date/time parsing\n- Event reminders and notifications\n",
+      "image": {
+        "repository": "ghcr.io/inference-gateway/google-calendar-agent",
+        "tag": "0.4.23",
+        "size": "63.8MB"
+      },
+      "author": {
+        "name": "Eden Reich",
+        "email": "eden.reich@gmail.com",
+        "url": "https://github.com/inference-gateway"
+      },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/inference-gateway/google-calendar-agent",
+      "repository": "https://github.com/inference-gateway/google-calendar-agent",
+      "documentation": "https://docs.inference-gateway.com",
+      "categories": [
+        "productivity",
+        "agent-to-agent",
+        "calendar"
+      ],
+      "tags": [
+        "a2a",
+        "calendar",
+        "google-calendar",
+        "scheduling",
+        "multi-agent",
+        "google-api"
+      ]
+    },
+    {
+      "id": "n8n-agent",
+      "name": "n8n Workflow Automation Agent",
+      "version": "0.2.1",
+      "description": "A2A agent server specialized in generating and automating n8n workflows",
+      "longDescription": "The n8n Workflow Automation Agent is a specialized agent-to-agent service that enables other agents \nto interact with n8n's powerful workflow automation platform. This agent handles workflow creation, \nexecution, and data transformations, allowing other agents to leverage n8n's extensive \nintegration ecosystem without managing the platform directly - all via GitOps.\n\n## Key Features\n- Workflow creation, modification, and execution via agent requests\n- Integration with 400+ services and APIs through n8n's node ecosystem\n- Data transformation and processing pipeline management\n- Event-driven automation and trigger management\n- Credential management for secure integrations\n- Custom function development and code execution\n- Webhook handling and HTTP endpoint creation\n",
+      "image": {
+        "repository": "ghcr.io/inference-gateway/n8n-agent",
+        "tag": "0.2.1",
+        "size": "35.2MB"
+      },
+      "author": {
+        "name": "Eden Reich",
+        "email": "eden.reich@gmail.com",
+        "url": "https://github.com/inference-gateway"
+      },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/inference-gateway/n8n-agent",
+      "repository": "https://github.com/inference-gateway/n8n-agent",
+      "documentation": "https://docs.inference-gateway.com",
+      "categories": [
+        "automation",
+        "agent-to-agent",
+        "workflow",
+        "n8n"
+      ],
+      "tags": [
+        "a2a",
+        "n8n",
+        "workflow",
+        "automation",
+        "integrations",
+        "multi-agent",
+        "data-processing"
+      ]
+    }
+  ]
+}
