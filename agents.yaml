@@ -13,6 +13,8 @@
 # Third-party agents are welcome. Open a PR adding one entry.
 
 agents:
+  - url: https://github.com/inference-gateway/mock-agent
+    ref: main
   - url: https://github.com/inference-gateway/browser-agent
     ref: main
   - url: https://github.com/inference-gateway/documentation-agent
@@ -20,4 +22,6 @@ agents:
   - url: https://github.com/inference-gateway/google-calendar-agent
     ref: main
   - url: https://github.com/inference-gateway/n8n-agent
+    ref: main
+  - url: https://github.com/inference-gateway/grafana-agent
     ref: main
