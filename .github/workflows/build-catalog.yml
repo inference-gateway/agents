@@ -1,14 +1,18 @@
+---
 name: Build catalog
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
-      - 'agents/**'
+      - 'agents.yaml'
       - 'scripts/build-catalog.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/build-catalog.yml'
+  schedule:
+    - cron: '0 4 * * *'
   workflow_dispatch:
 
 permissions:

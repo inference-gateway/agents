@@ -1,53 +1,38 @@
 # Agents Catalog
 
-The source-of-truth catalog for agents listed on
+Source list for the agents shown on
 [registry.inference-gateway.com](https://registry.inference-gateway.com).
 
-The registry SPA fetches `catalog.json` from this repo at runtime via jsdelivr, so adding or
-updating an agent here propagates to the live registry without redeploying the registry app.
+This repo doesn't store agent definitions itself — each agent's
+[ADL](https://github.com/inference-gateway/adl) `agent.yaml` lives in its own GitHub repo and is
+the source of truth. This repo just lists which agents to include in the catalog. A scheduled
+build job pulls each `agent.yaml`, validates it against the ADL JSON Schema, and bundles
+everything into a single `catalog.json` served via jsdelivr.
 
 ## Layout
 
 ```
-agents/<agent-id>/metadata.yaml   # source of truth, hand-edited
-scripts/build-catalog.mjs         # generates catalog.json
-catalog.json                      # generated, committed
+agents.yaml                 # the only file you edit — list of GitHub repos to include
+scripts/build-catalog.mjs   # fetches + validates + bundles into catalog.json
+catalog.json                # generated, committed; consumed by the registry SPA
 .github/workflows/build-catalog.yml
 ```
 
 ## Adding an agent
 
-1. Create `agents/<agent-id>/metadata.yaml` matching the schema below.
-2. Open a PR. The CI workflow regenerates `catalog.json` automatically on merge to `main`.
-3. The registry will pick up the new agent within the jsdelivr `@main` cache window
-   (up to ~12h).
+1. Make sure the agent's repo has an ADL `agent.yaml` at its root
+   (see [`inference-gateway/adl`](https://github.com/inference-gateway/adl) for the schema).
+2. Open a PR appending one entry to `agents.yaml`:
 
-## Metadata schema
+   ```yaml
+   - url: https://github.com/some-org/cool-agent
+     ref: main # branch, tag, or SHA. Pin to a release tag if you can.
+   ```
 
-```yaml
-id: unique-agent-id
-name: Human-readable Agent Name
-version: 1.0.0
-description: Brief description of the agent's purpose
-longDescription: |
-  Optional multi-line description with features and capabilities.
-image:
-  repository: ghcr.io/inference-gateway/agent-name
-  tag: 1.0.0
-  size: 25.3MB
-author:
-  name: Author Name
-  email: author@example.com
-  url: https://github.com/author       # optional
-license: Apache-2.0
-homepage: https://github.com/org/agent
-repository: https://github.com/org/agent
-documentation: https://docs.example.com
-categories:
-  - category1
-tags:
-  - tag1
-```
+3. On merge, CI rebuilds `catalog.json`. The live registry picks it up within the jsdelivr
+   `@main` cache window (up to ~12h).
+
+Third-party agents are welcome — the `url` does not have to live under `inference-gateway`.
 
 ## Catalog endpoint
 
@@ -61,9 +46,20 @@ Shape:
 {
   "version": 1,
   "updated": "2026-05-25T00:00:00Z",
-  "agents": [ { "id": "...", "name": "...", ... } ]
+  "agents": [
+    {
+      "apiVersion": "adl.inference-gateway.com/v1",
+      "kind": "Agent",
+      "metadata": { "name": "...", "description": "...", "version": "..." },
+      "spec": { "...": "..." },
+      "_source": { "url": "https://github.com/...", "ref": "main", "fetchedAt": "..." }
+    }
+  ]
 }
 ```
+
+Each agent doc is a pure ADL manifest plus a non-schema `_source` block recording where the
+aggregator pulled it from.
 
 ## Local build
 
@@ -72,5 +68,18 @@ npm install
 npm run build      # writes catalog.json
 ```
 
-The build script validates each `metadata.yaml` and exits non-zero on missing required fields,
-so a malformed PR fails CI before a broken catalog can ship.
+The build script:
+
+1. Reads `agents.yaml`.
+2. Fetches `agent.yaml` from `raw.githubusercontent.com/<owner>/<repo>/<ref>/agent.yaml` for each entry.
+3. Validates against the ADL JSON Schema (`adl/schema/v1/schema.json`) via Ajv.
+4. Rejects duplicate `metadata.name` collisions.
+5. Sorts by `metadata.name` and writes `catalog.json`.
+
+Override the ADL schema location with `ADL_SCHEMA_URL=...` if needed (for testing against a fork).
+
+## Schedule
+
+The workflow runs on `push` to `agents.yaml` / scripts / workflow, plus a daily cron
+(`0 4 * * *` UTC) so upstream `agent.yaml` version bumps roll into the catalog without manual
+intervention.

@@ -1,138 +1,1376 @@
 {
   "version": 1,
-  "updated": "2026-05-25T16:45:17.186Z",
+  "updated": "2026-05-25T17:30:33.228Z",
   "agents": [
     {
-      "id": "browser-agent",
-      "name": "Browser Automation Agent",
-      "version": "0.4.16",
-      "description": "A2A agent server for browser automation and web testing using Playwright",
-      "longDescription": "The Browser Automation Agent is a specialized agent-to-agent service that enables other agents \nto interact with web browsers programmatically using Playwright. This agent handles browser \nautomation, web scraping, testing, and interaction tasks, allowing other agents to leverage \npowerful browser capabilities without managing browser instances directly.\n\n## Key Features\n- Automated web page navigation and interaction\n- Web scraping and data extraction from websites\n- Automated testing of web applications\n- Screenshot and PDF generation from web pages\n- Form filling and submission automation\n- JavaScript execution in browser contexts\n- Multi-browser support (Chromium, Firefox, Safari)\n- Mobile browser emulation and responsive testing\n",
-      "image": {
-        "repository": "ghcr.io/inference-gateway/browser-agent",
-        "tag": "0.4.16",
-        "size": "3.42GB"
+      "apiVersion": "adl.inference-gateway.com/v1",
+      "kind": "Agent",
+      "metadata": {
+        "name": "browser-agent",
+        "description": "AI agent for browser automation and web testing using Playwright",
+        "version": "0.6.3"
       },
-      "author": {
-        "name": "Eden Reich",
-        "email": "eden.reich@gmail.com",
-        "url": "https://github.com/inference-gateway"
+      "spec": {
+        "capabilities": {
+          "streaming": true,
+          "pushNotifications": false,
+          "stateTransitionHistory": false
+        },
+        "config": {
+          "tools": {
+            "read": {
+              "enabled": true,
+              "max_lines": 2000
+            },
+            "write": {
+              "enabled": true
+            },
+            "edit": {
+              "enabled": true
+            },
+            "fetch": {
+              "enabled": true,
+              "allow_downloads": true,
+              "download_dir": "/tmp/playwright/artifacts"
+            }
+          },
+          "browser": {
+            "headless": true,
+            "engine": "chromium",
+            "stealth_mode": false,
+            "session_timeout": "2m",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+            "viewport_width": 1920,
+            "viewport_height": 1080,
+            "header_accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "header_accept_language": "en-US,en;q=0.9",
+            "header_accept_encoding": "gzip, deflate, br",
+            "header_dnt": "1",
+            "header_connection": "keep-alive",
+            "header_upgrade_insecure_requests": "1",
+            "data_dir": "/tmp/playwright/artifacts",
+            "xvfb_enabled": false,
+            "xvfb_display": ":99",
+            "xvfb_screen_resolution": "1920x1080x24",
+            "args": [
+              "--disable-blink-features=AutomationControlled",
+              "--disable-features=VizDisplayCompositor",
+              "--no-first-run",
+              "--disable-default-apps",
+              "--disable-extensions",
+              "--disable-plugins",
+              "--disable-sync",
+              "--disable-translate",
+              "--hide-scrollbars",
+              "--mute-audio",
+              "--no-zygote",
+              "--disable-background-timer-throttling",
+              "--disable-backgrounding-occluded-windows",
+              "--disable-renderer-backgrounding",
+              "--disable-ipc-flooding-protection"
+            ]
+          }
+        },
+        "tools": [
+          {
+            "id": "read"
+          },
+          {
+            "id": "write"
+          },
+          {
+            "id": "edit"
+          },
+          {
+            "id": "fetch"
+          },
+          {
+            "id": "navigate_to_url",
+            "name": "navigate_to_url",
+            "description": "Navigate to a specific URL and wait for the page to fully load",
+            "tags": [
+              "navigation",
+              "browser",
+              "playwright"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "The URL to navigate to"
+                },
+                "wait_until": {
+                  "type": "string",
+                  "description": "When to consider navigation succeeded (domcontentloaded, load, networkidle)",
+                  "default": "load"
+                },
+                "timeout": {
+                  "type": "integer",
+                  "description": "Maximum navigation timeout in milliseconds",
+                  "default": 30000
+                }
+              },
+              "required": [
+                "url"
+              ]
+            },
+            "inject": [
+              "logger",
+              "playwright"
+            ]
+          },
+          {
+            "id": "click_element",
+            "name": "click_element",
+            "description": "Click on an element identified by selector, text, or other locator strategies",
+            "tags": [
+              "interaction",
+              "click",
+              "playwright"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "selector": {
+                  "type": "string",
+                  "description": "CSS selector, XPath, or text to identify the element"
+                },
+                "click_count": {
+                  "type": "integer",
+                  "description": "Number of times to click",
+                  "default": 1
+                },
+                "button": {
+                  "type": "string",
+                  "description": "Mouse button to use (left, right, middle)",
+                  "default": "left"
+                },
+                "force": {
+                  "type": "boolean",
+                  "description": "Force click even if element is not visible",
+                  "default": false
+                },
+                "timeout": {
+                  "type": "integer",
+                  "description": "Maximum time to wait for element in milliseconds",
+                  "default": 30000
+                }
+              },
+              "required": [
+                "selector"
+              ]
+            },
+            "inject": [
+              "logger",
+              "playwright"
+            ]
+          },
+          {
+            "id": "fill_form",
+            "name": "fill_form",
+            "description": "Fill form fields with provided data, handling various input types",
+            "tags": [
+              "form",
+              "input",
+              "automation",
+              "playwright"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fields": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "selector": {
+                        "type": "string",
+                        "description": "Selector for the form field"
+                      },
+                      "value": {
+                        "type": "string",
+                        "description": "Value to fill in the field"
+                      },
+                      "type": {
+                        "type": "string",
+                        "description": "Type of input (text, select, checkbox, radio)"
+                      }
+                    },
+                    "required": [
+                      "selector",
+                      "value"
+                    ]
+                  },
+                  "description": "List of form fields to fill"
+                },
+                "submit": {
+                  "type": "boolean",
+                  "description": "Whether to submit the form after filling",
+                  "default": false
+                },
+                "submit_selector": {
+                  "type": "string",
+                  "description": "Selector for the submit button if submit is true"
+                }
+              },
+              "required": [
+                "fields"
+              ]
+            },
+            "inject": [
+              "logger",
+              "playwright"
+            ]
+          },
+          {
+            "id": "extract_data",
+            "name": "extract_data",
+            "description": "Extract data from the page using selectors and return structured information",
+            "tags": [
+              "scraping",
+              "extraction",
+              "data",
+              "playwright"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "extractors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Name for the extracted data field"
+                      },
+                      "selector": {
+                        "type": "string",
+                        "description": "CSS selector or XPath to extract data from"
+                      },
+                      "attribute": {
+                        "type": "string",
+                        "description": "Attribute to extract (text, href, src, etc.)",
+                        "default": "text"
+                      },
+                      "multiple": {
+                        "type": "boolean",
+                        "description": "Extract all matching elements or just the first",
+                        "default": false
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "selector"
+                    ]
+                  },
+                  "description": "List of data extractors to run"
+                },
+                "format": {
+                  "type": "string",
+                  "description": "Output format (json, csv, text)",
+                  "default": "json"
+                }
+              },
+              "required": [
+                "extractors"
+              ]
+            },
+            "inject": [
+              "logger",
+              "playwright"
+            ]
+          },
+          {
+            "id": "take_screenshot",
+            "name": "take_screenshot",
+            "description": "Capture a screenshot of the current page or specific element",
+            "tags": [
+              "screenshot",
+              "capture",
+              "visual",
+              "playwright"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "full_page": {
+                  "type": "boolean",
+                  "description": "Capture the entire scrollable page",
+                  "default": false
+                },
+                "selector": {
+                  "type": "string",
+                  "description": "Optional selector to screenshot specific element"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Image format (png, jpeg)",
+                  "default": "png"
+                },
+                "quality": {
+                  "type": "integer",
+                  "description": "Quality for jpeg images (0-100)",
+                  "default": 80
+                }
+              },
+              "required": []
+            },
+            "inject": [
+              "logger",
+              "playwright"
+            ]
+          },
+          {
+            "id": "execute_script",
+            "name": "execute_script",
+            "description": "Execute custom JavaScript inside the current page via Playwright's page.evaluate(). The script runs in the browser context, NOT in Node.js: globals like window, document, navigator, fetch and localStorage are available; Node.js built-ins (require, process, __dirname, __filename, fs, path, os, http, https, child_process, etc.) are NOT available and calls to them will be rejected. Use browser/DOM APIs only. The script body is automatically wrapped in an IIFE, so a top-level `return` is valid. Set async=true if the body uses `await`.",
+            "tags": [
+              "javascript",
+              "execution",
+              "custom",
+              "playwright"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "script": {
+                  "type": "string",
+                  "description": "JavaScript code to execute in the browser (Playwright page.evaluate context). Use DOM/Web APIs only - Node.js built-ins are unavailable."
+                },
+                "args": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Arguments to pass to the script"
+                },
+                "return_value": {
+                  "type": "boolean",
+                  "description": "Whether to return the script execution result",
+                  "default": true
+                }
+              },
+              "required": [
+                "script"
+              ]
+            },
+            "inject": [
+              "logger",
+              "playwright"
+            ]
+          },
+          {
+            "id": "handle_authentication",
+            "name": "handle_authentication",
+            "description": "Handle various authentication scenarios including basic auth, OAuth, and custom login forms",
+            "tags": [
+              "authentication",
+              "login",
+              "security",
+              "playwright"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Authentication type (basic, form, oauth)"
+                },
+                "username": {
+                  "type": "string",
+                  "description": "Username or email for authentication"
+                },
+                "password": {
+                  "type": "string",
+                  "description": "Password for authentication"
+                },
+                "login_url": {
+                  "type": "string",
+                  "description": "URL of the login page for form authentication"
+                },
+                "username_selector": {
+                  "type": "string",
+                  "description": "Selector for username field in form authentication"
+                },
+                "password_selector": {
+                  "type": "string",
+                  "description": "Selector for password field in form authentication"
+                },
+                "submit_selector": {
+                  "type": "string",
+                  "description": "Selector for submit button in form authentication"
+                }
+              },
+              "required": [
+                "type"
+              ]
+            },
+            "inject": [
+              "logger",
+              "playwright"
+            ]
+          },
+          {
+            "id": "wait_for_condition",
+            "name": "wait_for_condition",
+            "description": "Wait for specific conditions before proceeding with automation",
+            "tags": [
+              "wait",
+              "synchronization",
+              "timing",
+              "playwright"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "condition": {
+                  "type": "string",
+                  "description": "Type of condition (selector, navigation, function, timeout, networkidle)"
+                },
+                "selector": {
+                  "type": "string",
+                  "description": "Selector to wait for if condition is 'selector'"
+                },
+                "state": {
+                  "type": "string",
+                  "description": "State to wait for (visible, hidden, attached, detached)",
+                  "default": "visible"
+                },
+                "timeout": {
+                  "type": "integer",
+                  "description": "Maximum time to wait in milliseconds",
+                  "default": 30000
+                },
+                "custom_function": {
+                  "type": "string",
+                  "description": "Custom JavaScript function to evaluate for 'function' condition"
+                }
+              },
+              "required": [
+                "condition"
+              ]
+            },
+            "inject": [
+              "logger",
+              "playwright"
+            ]
+          }
+        ],
+        "skills": [
+          {
+            "id": "webapp-testing",
+            "bare": true,
+            "name": "webapp-testing",
+            "description": "Use this when the user asks to verify, validate, or test a webapp end-to-end. Performs reconnaissance-then-action: navigate, screenshot the rendered DOM, identify selectors, then exercise the flow using navigate_to_url, click_element, fill_form, wait_for_condition, and take_screenshot.",
+            "tags": [
+              "testing",
+              "qa",
+              "e2e",
+              "playwright"
+            ],
+            "license": "Apache-2.0"
+          },
+          {
+            "id": "web-scraping",
+            "bare": true,
+            "name": "web-scraping",
+            "description": "Use this when the user asks to extract structured data from one or more pages. Drives extract_data across paginated URLs, normalizes results, and writes a JSON/CSV artifact via the write tool.",
+            "tags": [
+              "scraping",
+              "extraction",
+              "data"
+            ],
+            "license": "Apache-2.0"
+          },
+          {
+            "id": "form-automation",
+            "bare": true,
+            "name": "form-automation",
+            "description": "Use this when the user asks to complete a multi-step form, optionally behind a login. Orchestrates handle_authentication, navigate_to_url, fill_form, click_element, wait_for_condition, and take_screenshot to capture the post-submit confirmation.",
+            "tags": [
+              "forms",
+              "automation",
+              "workflow"
+            ],
+            "license": "Apache-2.0"
+          },
+          {
+            "id": "deep-research",
+            "bare": true,
+            "name": "deep-research",
+            "description": "Use this when the user asks an open-ended question that needs synthesis from multiple web sources. Plans sub-questions, drives a search engine, visits and cross-references sources via navigate_to_url + extract_data, and writes a cited markdown report with write.",
+            "tags": [
+              "research",
+              "synthesis",
+              "citations",
+              "investigation"
+            ],
+            "license": "Apache-2.0"
+          }
+        ],
+        "agent": {
+          "provider": "",
+          "model": "",
+          "systemPrompt": "You are an expert Playwright browser automation assistant with the ability to create downloadable artifacts. Your primary role is to help users automate web browser tasks efficiently and reliably.\n\nYour core capabilities include:\n1. **Web Navigation**: Navigate to URLs, handle redirects, and manage page loads\n2. **Element Interaction**: Click buttons, fill forms, select dropdowns, and interact with any web element\n3. **Data Extraction**: Scrape and extract structured data from web pages\n4. **Form Automation**: Fill and submit complex forms with validation\n5. **Screenshot Capture**: Take full-page or element-specific screenshots\n6. **JavaScript Execution**: Run custom scripts in the browser context\n7. **Authentication Handling**: Manage various authentication methods\n8. **Synchronization**: Wait for specific conditions and handle dynamic content\n9. **Artifact Creation**: Create downloadable files for screenshots, extracted data, and CSV exports\n\nKey expertise areas:\n- Modern web technologies (SPA, dynamic content, AJAX)\n- Selector strategies (CSS, XPath, text, accessibility)\n- Browser automation best practices\n- Error handling and retry mechanisms\n- Cross-browser compatibility (Chromium, Firefox, WebKit)\n- Performance optimization for automation scripts\n- Handling pop-ups, alerts, and iframes\n- File uploads and downloads\n- Network interception and modification\n- Mobile and responsive testing\n\nWhen helping users:\n- Always use robust selectors that won't break easily\n- Implement proper wait strategies for dynamic content\n- Handle errors gracefully with informative messages\n- Suggest efficient approaches for the task\n- Consider accessibility and best practices\n- Provide clear explanations of automation steps\n- Optimize for speed while maintaining reliability\n\n**Tool selection: fetch vs browser**\n\nPrefer the fetch tool over navigate_to_url whenever the target does not require JavaScript execution or a stateful session. fetch is an order of magnitude faster, leaves no browser session open, and returns the raw bytes directly (with optional save_path for downloads).\n\nReach for fetch when:\n- The URL serves static content (raw GitHub files, README.md, sitemap.xml, robots.txt, RFCs, JSON/XML APIs, RSS/Atom feeds).\n- The user wants to download a file (PDF, CSV, image, binary asset).\n- You need a one-shot health/status probe (GET /health).\n- The data the user wants is in a backend JSON endpoint the page calls, not in the rendered DOM.\n\nReach for navigate_to_url (and the Playwright tools) when:\n- The page is a Single-Page App that hydrates client-side.\n- Content is behind authentication, cookies, or CSRF that requires a browser session.\n- You need to interact with the DOM (click, fill, screenshot).\n- The page renders meaningful content only after JS execution (most modern article sites, dashboards, admin panels).\n\nWhen in doubt: try fetch first. If the response body looks like an empty shell that gets filled in by JS, fall back to navigate_to_url.\n\n**IMPORTANT - Artifact Creation**:\nWhen users request screenshots, the take_screenshot tool automatically creates downloadable artifacts. The screenshot will be available via a download URL returned in the response.\n\nFor data extraction, you can use the create_artifact tool to save extracted data as downloadable files (JSON/CSV/TXT).\n\n**IMPORTANT - Answering capability questions**:\nWhen the user asks about your skills, tools, capabilities, or what you can do (e.g. \"what skills do you have?\", \"list your tools\", \"what can you do?\"), answer directly from this system prompt and the AVAILABLE SKILLS list below. Do NOT call any tools, do NOT navigate to a URL, and do NOT Read SKILL.md files. Only load a SKILL.md (via the Read tool) once the user has given you a concrete task that matches one of those skills.\n\nYour automation solutions should be maintainable, efficient, and production-ready.\n"
+        },
+        "services": {
+          "playwright": {
+            "type": "service",
+            "interface": "BrowserAutomation",
+            "factory": "NewPlaywrightService",
+            "description": "Playwright service for browser automation and web testing"
+          }
+        },
+        "server": {
+          "port": 8080,
+          "debug": false,
+          "scheme": "http"
+        },
+        "language": {
+          "go": {
+            "module": "github.com/inference-gateway/browser-agent",
+            "version": "1.26.2",
+            "vendor": {
+              "deps": [],
+              "devdeps": [
+                "github.com/maxbrunsfeld/counterfeiter/v6@v6.12.2"
+              ]
+            }
+          }
+        },
+        "acronyms": [
+          "DOM",
+          "CSS",
+          "XPath",
+          "URL",
+          "API",
+          "SPA",
+          "AJAX"
+        ],
+        "scm": {
+          "provider": "github",
+          "url": "https://github.com/inference-gateway/browser-agent",
+          "github_app": true,
+          "issue_templates": false,
+          "dependabot": true,
+          "ci": true,
+          "cd": true
+        },
+        "artifacts": {
+          "enabled": true
+        },
+        "development": {
+          "sandbox": {
+            "flox": {
+              "enabled": true
+            },
+            "devcontainer": {
+              "enabled": false
+            },
+            "dockerCompose": {
+              "enabled": true
+            }
+          },
+          "ai": {
+            "claudecode": {
+              "enabled": true
+            },
+            "infer": {
+              "enabled": true
+            },
+            "codex": {
+              "enabled": false
+            },
+            "gemini": {
+              "enabled": false
+            },
+            "opencode": {
+              "enabled": false
+            }
+          },
+          "deps": []
+        }
       },
-      "license": "Apache-2.0",
-      "homepage": "https://github.com/inference-gateway/browser-agent",
-      "repository": "https://github.com/inference-gateway/browser-agent",
-      "documentation": "https://docs.inference-gateway.com",
-      "categories": [
-        "browser",
-        "automation"
-      ],
-      "tags": [
-        "a2a",
-        "multi-agent"
-      ]
+      "_source": {
+        "url": "https://github.com/inference-gateway/browser-agent",
+        "ref": "main",
+        "fetchedAt": "2026-05-25T17:30:33.228Z"
+      }
     },
     {
-      "id": "documentation-agent",
-      "name": "Documentation Agent for Context7",
-      "version": "0.2.25",
-      "description": "A2A agent server that provides Context7-style documentation capabilities for your agents",
-      "longDescription": "The Documentation Server is a specialized agent-to-agent service that provides on-demand access \nto comprehensive technical documentation indexed on Context7. Other agents can query this server to \nretrieve documentation for any library, framework, tool, or technology available in the Context7 \ndocumentation index. It acts as a centralized knowledge base that enables agents to access accurate, \nup-to-date documentation without requiring local storage or manual updates.\n\n## Key Features\n- Instant documentation retrieval for thousands of indexed technologies\n- API reference documentation for popular libraries and frameworks\n- Tool usage guides and best practices\n- Programming language documentation and specifications\n- Cloud platform and service documentation\n- Version-specific documentation support\n- Contextual search and intelligent query processing\n",
-      "image": {
-        "repository": "ghcr.io/inference-gateway/documentation-agent",
-        "tag": "0.2.25",
-        "size": "56.2MB"
+      "apiVersion": "adl.inference-gateway.com/v1",
+      "kind": "Agent",
+      "metadata": {
+        "name": "documentation-agent",
+        "description": "A2A agent server that provides Context7-style documentation capabilities for your agents",
+        "version": "0.2.31"
       },
-      "author": {
-        "name": "Eden Reich",
-        "email": "eden.reich@gmail.com"
+      "spec": {
+        "capabilities": {
+          "streaming": true,
+          "pushNotifications": false,
+          "stateTransitionHistory": true
+        },
+        "card": {
+          "url": "http://localhost:8080",
+          "documentationUrl": "https://docs.inference-gateway.com",
+          "protocolVersion": "0.3.0",
+          "preferredTransport": "JSONRPC",
+          "defaultInputModes": [
+            "text"
+          ],
+          "defaultOutputModes": [
+            "text"
+          ]
+        },
+        "agent": {
+          "provider": "",
+          "model": "",
+          "systemPrompt": "You are an intelligent documentation retrieval assistant that specializes in finding and fetching relevant documentation from Context7-compatible sources. You can resolve library names to their proper identifiers and retrieve targeted documentation based on specific topics or requirements.\n",
+          "maxTokens": 4096,
+          "temperature": 0.7
+        },
+        "config": {
+          "tools": {
+            "read": {
+              "enabled": true
+            }
+          }
+        },
+        "tools": [
+          {
+            "id": "read"
+          },
+          {
+            "id": "resolve_library_id",
+            "name": "resolve_library_id",
+            "description": "Resolves library name to Context7-compatible library ID and returns matching libraries",
+            "tags": [
+              "docs",
+              "libraries"
+            ],
+            "inject": [
+              "logger"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "libraryName": {
+                  "type": "string",
+                  "description": "Official library name with proper punctuation (e.g., 'Next.js', 'Three.js', 'Customer.io'). Used by Context7 to rank candidate libraries."
+                },
+                "query": {
+                  "type": "string",
+                  "description": "The question or task the caller is trying to accomplish. Used by Context7 to rank library results by relevance. Do not include secrets."
+                }
+              },
+              "required": [
+                "libraryName",
+                "query"
+              ]
+            }
+          },
+          {
+            "id": "get_library_docs",
+            "name": "get_library_docs",
+            "description": "Fetches up-to-date documentation for a library using Context7-compatible library ID",
+            "tags": [
+              "docs",
+              "libraries"
+            ],
+            "inject": [
+              "logger"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "libraryId": {
+                  "type": "string",
+                  "description": "Exact Context7-compatible library ID (e.g., '/mongodb/docs', '/vercel/next.js', '/supabase/supabase', '/vercel/next.js/v14.3.0-canary.87') retrieved from resolve_library_id or supplied by the caller in the format '/org/project' or '/org/project/version'."
+                },
+                "query": {
+                  "type": "string",
+                  "description": "Specific question or task to answer from the documentation. Be specific - 'How to set up JWT auth in Express.js' or 'React useEffect cleanup examples', not 'auth' or 'hooks'. Do not include secrets."
+                }
+              },
+              "required": [
+                "libraryId",
+                "query"
+              ]
+            }
+          }
+        ],
+        "skills": [
+          {
+            "id": "library-documentation-lookup",
+            "bare": true,
+            "name": "library-documentation-lookup",
+            "description": "Use this when you need up-to-date documentation for a third-party library or framework before writing code against it. First resolves the library name to a Context7-compatible ID via resolve_library_id when the caller does not already know it (format '/org/project' or '/org/project/version'), then fetches focused, topic-scoped documentation via get_library_docs. Good for filling in unknowns about specific APIs, hooks, configuration options, or version-specific behavior.",
+            "tags": [
+              "docs",
+              "libraries",
+              "context7",
+              "documentation",
+              "reference"
+            ]
+          }
+        ],
+        "server": {
+          "port": 8080,
+          "debug": false,
+          "scheme": "http"
+        },
+        "language": {
+          "go": {
+            "module": "github.com/inference-gateway/documentation-agent",
+            "version": "1.26.2",
+            "vendor": {
+              "deps": [],
+              "devdeps": []
+            }
+          }
+        },
+        "scm": {
+          "provider": "github",
+          "url": "https://github.com/inference-gateway/documentation-agent",
+          "github_app": true,
+          "issue_templates": false,
+          "dependabot": true,
+          "ci": true,
+          "cd": true
+        },
+        "development": {
+          "sandbox": {
+            "flox": {
+              "enabled": true
+            },
+            "devcontainer": {
+              "enabled": false
+            },
+            "dockerCompose": {
+              "enabled": false
+            }
+          },
+          "ai": {
+            "claudecode": {
+              "enabled": true
+            },
+            "infer": {
+              "enabled": true
+            },
+            "codex": {
+              "enabled": false
+            },
+            "gemini": {
+              "enabled": false
+            },
+            "opencode": {
+              "enabled": false
+            }
+          },
+          "deps": []
+        }
       },
-      "license": "Apache-2.0",
-      "homepage": "https://github.com/inference-gateway/documentation-agent",
-      "repository": "https://github.com/inference-gateway/documentation-agent",
-      "documentation": "https://docs.inference-gateway.com",
-      "categories": [
-        "documentation",
-        "agent-to-agent",
-        "context7"
-      ],
-      "tags": [
-        "a2a",
-        "documentation",
-        "context7",
-        "multi-agent",
-        "autonomous",
-        "api-docs"
-      ]
+      "_source": {
+        "url": "https://github.com/inference-gateway/documentation-agent",
+        "ref": "main",
+        "fetchedAt": "2026-05-25T17:30:33.228Z"
+      }
     },
     {
-      "id": "google-calendar-agent",
-      "name": "Google Calendar Management Agent",
-      "version": "0.4.23",
-      "description": "A2A agent server enabling Google Calendar scheduling, retrieval, and automation",
-      "longDescription": "The Google Calendar Agent is a specialized agent-to-agent service that enables other agents \nto interact with Google Calendar programmatically. This agent handles authentication, event \nmanagement, scheduling, and calendar queries, allowing other agents to integrate calendar \nfunctionality without managing Google API complexities directly.\n\n## Key Features\n- Event creation, modification, and deletion via agent requests\n- Calendar availability checking and conflict detection\n- Meeting scheduling with multiple participants\n- Recurring events and series management\n- Calendar sharing and permission management\n- Time zone handling and conversion\n- Natural language date/time parsing\n- Event reminders and notifications\n",
-      "image": {
-        "repository": "ghcr.io/inference-gateway/google-calendar-agent",
-        "tag": "0.4.23",
-        "size": "63.8MB"
+      "apiVersion": "adl.inference-gateway.com/v1",
+      "kind": "Agent",
+      "metadata": {
+        "name": "google-calendar-agent",
+        "description": "A Google Calendar A2A agent for AI assistants to interact with Google Calendar",
+        "version": "0.4.28"
       },
-      "author": {
-        "name": "Eden Reich",
-        "email": "eden.reich@gmail.com",
-        "url": "https://github.com/inference-gateway"
+      "spec": {
+        "capabilities": {
+          "streaming": true,
+          "pushNotifications": false,
+          "stateTransitionHistory": false
+        },
+        "services": {
+          "google": {
+            "type": "service",
+            "interface": "CalendarService",
+            "factory": "NewServiceFactory",
+            "description": "Google Calendar API service for managing calendar events"
+          }
+        },
+        "tools": [
+          {
+            "id": "read"
+          },
+          {
+            "id": "list_calendar_events",
+            "name": "list_calendar_events",
+            "description": "List upcoming events from Google Calendar",
+            "tags": [
+              "calendar",
+              "events",
+              "list",
+              "google"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "timeMin": {
+                  "type": "string",
+                  "description": "Start time (RFC3339 format, e.g., 2024-01-01T00:00:00Z). Defaults to now."
+                },
+                "timeMax": {
+                  "type": "string",
+                  "description": "End time (RFC3339 format, e.g., 2024-01-01T23:59:59Z). Optional."
+                },
+                "maxResults": {
+                  "type": "integer",
+                  "description": "Maximum number of events to return (default: 10, max: 100)",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "query": {
+                  "type": "string",
+                  "description": "Free text search terms to find events. Optional."
+                }
+              }
+            },
+            "inject": [
+              "logger",
+              "google"
+            ]
+          },
+          {
+            "id": "create_calendar_event",
+            "name": "create_calendar_event",
+            "description": "Create a new event in Google Calendar",
+            "tags": [
+              "calendar",
+              "events",
+              "create",
+              "google"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "summary": {
+                  "type": "string",
+                  "description": "Event title/summary (required)"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Event description. Optional."
+                },
+                "startTime": {
+                  "type": "string",
+                  "description": "Start time in RFC3339 format (required, e.g., 2024-01-01T10:00:00Z)"
+                },
+                "endTime": {
+                  "type": "string",
+                  "description": "End time in RFC3339 format (required, e.g., 2024-01-01T11:00:00Z)"
+                },
+                "attendees": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "List of attendee email addresses. Optional."
+                },
+                "location": {
+                  "type": "string",
+                  "description": "Event location. Optional."
+                }
+              },
+              "required": [
+                "summary",
+                "startTime",
+                "endTime"
+              ]
+            },
+            "inject": [
+              "logger",
+              "google"
+            ]
+          },
+          {
+            "id": "update_calendar_event",
+            "name": "update_calendar_event",
+            "description": "Update an existing event in Google Calendar",
+            "tags": [
+              "calendar",
+              "events",
+              "update",
+              "google"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "eventId": {
+                  "type": "string",
+                  "description": "Event ID to update (required)"
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "Event title/summary. Optional."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Event description. Optional."
+                },
+                "startTime": {
+                  "type": "string",
+                  "description": "Start time in RFC3339 format. Optional."
+                },
+                "endTime": {
+                  "type": "string",
+                  "description": "End time in RFC3339 format. Optional."
+                },
+                "location": {
+                  "type": "string",
+                  "description": "Event location. Optional."
+                }
+              },
+              "required": [
+                "eventId"
+              ]
+            },
+            "inject": [
+              "logger",
+              "google"
+            ]
+          },
+          {
+            "id": "delete_calendar_event",
+            "name": "delete_calendar_event",
+            "description": "Delete an event from Google Calendar",
+            "tags": [
+              "calendar",
+              "events",
+              "delete",
+              "google"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "eventId": {
+                  "type": "string",
+                  "description": "Event ID to delete (required)"
+                }
+              },
+              "required": [
+                "eventId"
+              ]
+            },
+            "inject": [
+              "logger",
+              "google"
+            ]
+          },
+          {
+            "id": "get_calendar_event",
+            "name": "get_calendar_event",
+            "description": "Get details of a specific event from Google Calendar",
+            "tags": [
+              "calendar",
+              "events",
+              "get",
+              "google"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "eventId": {
+                  "type": "string",
+                  "description": "Event ID to retrieve (required)"
+                }
+              },
+              "required": [
+                "eventId"
+              ]
+            },
+            "inject": [
+              "logger",
+              "google"
+            ]
+          },
+          {
+            "id": "find_available_time",
+            "name": "find_available_time",
+            "description": "Find available time slots in the calendar",
+            "tags": [
+              "calendar",
+              "availability",
+              "scheduling",
+              "google"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "startDate": {
+                  "type": "string",
+                  "description": "Start date for search (RFC3339 format, e.g., 2024-01-01T00:00:00Z)"
+                },
+                "endDate": {
+                  "type": "string",
+                  "description": "End date for search (RFC3339 format, e.g., 2024-01-01T23:59:59Z)"
+                },
+                "duration": {
+                  "type": "integer",
+                  "description": "Duration in minutes for the desired time slot (default: 60)",
+                  "minimum": 15,
+                  "maximum": 480
+                }
+              },
+              "required": [
+                "startDate",
+                "endDate"
+              ]
+            },
+            "inject": [
+              "logger",
+              "google"
+            ]
+          },
+          {
+            "id": "check_conflicts",
+            "name": "check_conflicts",
+            "description": "Check for scheduling conflicts in the specified time range",
+            "tags": [
+              "calendar",
+              "conflicts",
+              "scheduling",
+              "google"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "startTime": {
+                  "type": "string",
+                  "description": "Start time to check (RFC3339 format, required)"
+                },
+                "endTime": {
+                  "type": "string",
+                  "description": "End time to check (RFC3339 format, required)"
+                }
+              },
+              "required": [
+                "startTime",
+                "endTime"
+              ]
+            },
+            "inject": [
+              "logger",
+              "google"
+            ]
+          },
+          {
+            "id": "get_current_datetime",
+            "name": "get_current_datetime",
+            "description": "Return the current date/time and the user's IANA timezone. Call this FIRST for any time-relative request (today, tomorrow, next Friday) before emitting RFC3339 timestamps to other calendar tools, so events land in the user's local timezone instead of an LLM-assumed default.",
+            "tags": [
+              "time",
+              "timezone",
+              "context"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "inject": [
+              "logger"
+            ]
+          }
+        ],
+        "skills": [
+          {
+            "id": "schedule-meeting",
+            "bare": true,
+            "name": "schedule-meeting",
+            "description": "Use this when the user asks to schedule a meeting, book a slot, or find a time that works. Resolves a conflict-free booking by finding open slots, validating no overlap, and creating the event.",
+            "tags": [
+              "calendar",
+              "scheduling",
+              "meeting"
+            ]
+          }
+        ],
+        "agent": {
+          "provider": "",
+          "model": "",
+          "systemPrompt": "You are a Google Calendar AI agent specialized in calendar management and scheduling operations.\n\nYour primary capabilities:\n1. **Event Management**: Create, update, delete, and retrieve calendar events\n2. **Scheduling Intelligence**: Find available time slots and check for conflicts\n3. **Calendar Operations**: List events with flexible time ranges and search queries\n\nKey features:\n- Support for both mock mode (demo/testing) and production Google Calendar API\n- RFC3339 timestamp handling for accurate scheduling\n- Intelligent conflict detection and availability checking\n- Attendee management and location tracking\n- Comprehensive event search and filtering\n\nWhen helping users:\n- Always validate time formats and ranges\n- Provide clear feedback on scheduling conflicts\n- Suggest alternative time slots when conflicts are detected\n- Handle both simple and complex scheduling scenarios\n- Maintain data accuracy and consistency with Google Calendar\n\nTime and timezone handling:\n- For any time-relative request (\"today\", \"tomorrow\", \"next Friday\",\n  \"in 2 hours\"), call the get_current_datetime tool FIRST to anchor\n  the current time and the user's IANA timezone. Do not guess.\n- Emit RFC3339 timestamps with the offset of the user's timezone\n  (e.g. 2026-05-20T14:00:00+02:00 for CEST), not UTC and not a\n  provider-default like Pacific Time.\n- If the user names an explicit timezone, prefer that over the\n  configured default.\n\nYour responses should be accurate, helpful, and focused on calendar management tasks.\n"
+        },
+        "config": {
+          "tools": {
+            "read": {
+              "enabled": true,
+              "max_lines": 2000
+            }
+          },
+          "google": {
+            "serviceAccountJson": "",
+            "credentialsPath": ""
+          },
+          "googleCalendar": {
+            "Id": "primary",
+            "mockMode": false,
+            "timezone": "UTC"
+          }
+        },
+        "server": {
+          "port": 8080,
+          "debug": false,
+          "scheme": "http"
+        },
+        "language": {
+          "go": {
+            "module": "github.com/inference-gateway/google-calendar-agent",
+            "version": "1.26.2",
+            "vendor": {
+              "deps": [],
+              "devdeps": []
+            }
+          }
+        },
+        "acronyms": [
+          "a2a",
+          "api",
+          "rfc",
+          "json",
+          "yaml"
+        ],
+        "scm": {
+          "provider": "github",
+          "url": "https://github.com/inference-gateway/google-calendar-agent",
+          "github_app": true,
+          "issue_templates": false,
+          "dependabot": true,
+          "ci": true,
+          "cd": true
+        },
+        "development": {
+          "sandbox": {
+            "flox": {
+              "enabled": true
+            },
+            "devcontainer": {
+              "enabled": false
+            },
+            "dockerCompose": {
+              "enabled": false
+            }
+          },
+          "ai": {
+            "claudecode": {
+              "enabled": true
+            },
+            "infer": {
+              "enabled": true
+            },
+            "codex": {
+              "enabled": false
+            },
+            "gemini": {
+              "enabled": false
+            },
+            "opencode": {
+              "enabled": false
+            }
+          },
+          "deps": []
+        }
       },
-      "license": "Apache-2.0",
-      "homepage": "https://github.com/inference-gateway/google-calendar-agent",
-      "repository": "https://github.com/inference-gateway/google-calendar-agent",
-      "documentation": "https://docs.inference-gateway.com",
-      "categories": [
-        "productivity",
-        "agent-to-agent",
-        "calendar"
-      ],
-      "tags": [
-        "a2a",
-        "calendar",
-        "google-calendar",
-        "scheduling",
-        "multi-agent",
-        "google-api"
-      ]
+      "_source": {
+        "url": "https://github.com/inference-gateway/google-calendar-agent",
+        "ref": "main",
+        "fetchedAt": "2026-05-25T17:30:33.228Z"
+      }
     },
     {
-      "id": "n8n-agent",
-      "name": "n8n Workflow Automation Agent",
-      "version": "0.2.1",
-      "description": "A2A agent server specialized in generating and automating n8n workflows",
-      "longDescription": "The n8n Workflow Automation Agent is a specialized agent-to-agent service that enables other agents \nto interact with n8n's powerful workflow automation platform. This agent handles workflow creation, \nexecution, and data transformations, allowing other agents to leverage n8n's extensive \nintegration ecosystem without managing the platform directly - all via GitOps.\n\n## Key Features\n- Workflow creation, modification, and execution via agent requests\n- Integration with 400+ services and APIs through n8n's node ecosystem\n- Data transformation and processing pipeline management\n- Event-driven automation and trigger management\n- Credential management for secure integrations\n- Custom function development and code execution\n- Webhook handling and HTTP endpoint creation\n",
-      "image": {
-        "repository": "ghcr.io/inference-gateway/n8n-agent",
-        "tag": "0.2.1",
-        "size": "35.2MB"
+      "apiVersion": "adl.inference-gateway.com/v1",
+      "kind": "Agent",
+      "metadata": {
+        "name": "n8n-agent",
+        "description": "A2A agent server specialized in generating and automating n8n workflows",
+        "version": "0.2.6"
       },
-      "author": {
-        "name": "Eden Reich",
-        "email": "eden.reich@gmail.com",
-        "url": "https://github.com/inference-gateway"
+      "spec": {
+        "capabilities": {
+          "streaming": true,
+          "pushNotifications": false,
+          "stateTransitionHistory": false
+        },
+        "config": {
+          "tools": {
+            "read": {
+              "enabled": true
+            }
+          }
+        },
+        "agent": {
+          "provider": "",
+          "model": "",
+          "systemPrompt": "You are an expert N8N workflow automation assistant. Your role is to help users build powerful automation workflows using N8N.\n\nYour primary capabilities:\n1. **Documentation Search**: Use the search_n8n_docs tool to search through comprehensive N8N node documentation to find the right nodes for any task\n2. **Workflow Generation**: Create complete, working N8N workflow YAML files based on user requirements using your knowledge and the create_artifact tool\n3. **Workflow Validation**: Use the validate_n8n_workflow tool to ensure all workflows are valid before creating artifacts\n\nKey knowledge areas:\n- 520+ N8N nodes including standard nodes and LangChain AI nodes\n- Best practices for workflow design and node configuration\n- Integration patterns for popular services (Slack, Gmail, databases, APIs, etc.)\n- Trigger types and when to use them (webhooks, schedules, manual triggers)\n- Data transformation and flow control\n- Error handling and workflow optimization\n\nWhen helping users:\n- Always search documentation first to ensure accurate node usage\n- Provide complete, working YAML configurations\n- Include proper parameter configurations with examples\n- Suggest best practices for workflow organization\n- Consider error handling and edge cases\n- Explain the workflow logic clearly\n\nYour responses should be practical, accurate, and ready-to-use. Your automation solutions should be maintainable, efficient, and production-ready.\n\nWhen a user requests a new workflow or asks to automate a process, follow the\nn8n-workflow-generation skill - load skills/n8n-workflow-generation/SKILL.md\nvia the read tool and execute its steps exactly.\n"
+        },
+        "tools": [
+          {
+            "id": "read"
+          },
+          {
+            "id": "search_n8n_docs",
+            "name": "search_n8n_docs",
+            "description": "Search through N8N node documentation to find relevant information about specific nodes, their parameters, and usage patterns",
+            "tags": [
+              "documentation",
+              "search",
+              "n8n"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "Search query to find relevant N8N nodes or documentation"
+                },
+                "node_type": {
+                  "type": "string",
+                  "description": "Optional filter by specific node type (e.g., \"webhook\", \"http\", \"database\")"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Optional filter by category (e.g., \"trigger\", \"action\", \"langchain\")"
+                }
+              },
+              "required": [
+                "query"
+              ]
+            },
+            "inject": [
+              "logger"
+            ]
+          },
+          {
+            "id": "validate_n8n_workflow",
+            "name": "validate_n8n_workflow",
+            "description": "Validate N8N workflow YAML/JSON to ensure it follows the correct schema and has all required attributes before creating artifacts",
+            "tags": [
+              "validation",
+              "workflow",
+              "n8n",
+              "yaml",
+              "json"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_content": {
+                  "type": "string",
+                  "description": "The complete N8N workflow content to validate (YAML or JSON format)"
+                },
+                "format": {
+                  "type": "string",
+                  "enum": [
+                    "yaml",
+                    "json",
+                    "auto"
+                  ],
+                  "description": "The format of the workflow content (auto-detect if not specified)",
+                  "default": "auto"
+                }
+              },
+              "required": [
+                "workflow_content"
+              ]
+            },
+            "inject": [
+              "logger"
+            ]
+          }
+        ],
+        "skills": [
+          {
+            "id": "n8n-workflow-generation",
+            "bare": true,
+            "name": "n8n-workflow-generation",
+            "description": "Use this when the user requests a new n8n workflow or asks to automate a process. Searches relevant nodes with search_n8n_docs, drafts the workflow YAML, validates it with validate_n8n_workflow, then saves it via create_artifact.",
+            "tags": [
+              "n8n",
+              "workflow",
+              "automation"
+            ]
+          }
+        ],
+        "server": {
+          "port": 8080,
+          "debug": false,
+          "scheme": "http"
+        },
+        "language": {
+          "go": {
+            "module": "github.com/inference-gateway/n8n-agent",
+            "version": "1.26.2",
+            "vendor": {
+              "deps": [],
+              "devdeps": []
+            }
+          }
+        },
+        "acronyms": [
+          "n8n"
+        ],
+        "scm": {
+          "provider": "github",
+          "url": "https://github.com/inference-gateway/n8n-agent",
+          "github_app": true,
+          "issue_templates": false,
+          "dependabot": true,
+          "ci": true,
+          "cd": true
+        },
+        "artifacts": {
+          "enabled": true
+        },
+        "development": {
+          "sandbox": {
+            "flox": {
+              "enabled": true
+            },
+            "devcontainer": {
+              "enabled": false
+            },
+            "dockerCompose": {
+              "enabled": false
+            }
+          },
+          "ai": {
+            "claudecode": {
+              "enabled": true
+            },
+            "infer": {
+              "enabled": true
+            },
+            "codex": {
+              "enabled": false
+            },
+            "gemini": {
+              "enabled": false
+            },
+            "opencode": {
+              "enabled": false
+            }
+          },
+          "deps": [
+            "deno@^2.7.14"
+          ]
+        }
       },
-      "license": "Apache-2.0",
-      "homepage": "https://github.com/inference-gateway/n8n-agent",
-      "repository": "https://github.com/inference-gateway/n8n-agent",
-      "documentation": "https://docs.inference-gateway.com",
-      "categories": [
-        "automation",
-        "agent-to-agent",
-        "workflow",
-        "n8n"
-      ],
-      "tags": [
-        "a2a",
-        "n8n",
-        "workflow",
-        "automation",
-        "integrations",
-        "multi-agent",
-        "data-processing"
-      ]
+      "_source": {
+        "url": "https://github.com/inference-gateway/n8n-agent",
+        "ref": "main",
+        "fetchedAt": "2026-05-25T17:30:33.228Z"
+      }
     }
   ]
 }
