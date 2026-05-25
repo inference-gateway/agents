@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-05-25T17:30:33.228Z",
+  "updated": "2026-05-25T17:30:54.849Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -596,7 +596,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/browser-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-25T17:30:33.228Z"
+        "fetchedAt": "2026-05-25T17:30:54.849Z"
       }
     },
     {
@@ -776,7 +776,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/documentation-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-25T17:30:33.228Z"
+        "fetchedAt": "2026-05-25T17:30:54.849Z"
       }
     },
     {
@@ -1185,7 +1185,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/google-calendar-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-25T17:30:33.228Z"
+        "fetchedAt": "2026-05-25T17:30:54.849Z"
       }
     },
     {
@@ -1369,7 +1369,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/n8n-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-25T17:30:33.228Z"
+        "fetchedAt": "2026-05-25T17:30:54.849Z"
       }
     }
   ]
