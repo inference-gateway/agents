@@ -11,7 +11,7 @@ everything into a single `catalog.json` served via jsdelivr.
 
 ## Layout
 
-```
+```text
 agents.yaml                 # the only file you edit — list of GitHub repos to include
 scripts/build-catalog.mjs   # fetches + validates + bundles into catalog.json
 catalog.json                # generated, committed; consumed by the registry SPA
@@ -36,7 +36,7 @@ Third-party agents are welcome — the `url` does not have to live under `infere
 
 ## Catalog endpoint
 
-```
+```text
 https://cdn.jsdelivr.net/gh/inference-gateway/agents@main/catalog.json
 ```
 
@@ -52,7 +52,11 @@ Shape:
       "kind": "Agent",
       "metadata": { "name": "...", "description": "...", "version": "..." },
       "spec": { "...": "..." },
-      "_source": { "url": "https://github.com/...", "ref": "main", "fetchedAt": "..." }
+      "_source": {
+        "url": "https://github.com/...",
+        "ref": "main",
+        "fetchedAt": "..."
+      }
     }
   ]
 }
