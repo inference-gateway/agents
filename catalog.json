@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-05-25T17:30:54.849Z",
+  "updated": "2026-05-26T00:00:00.972Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -596,7 +596,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/browser-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-25T17:30:54.849Z"
+        "fetchedAt": "2026-05-26T00:00:00.972Z"
       }
     },
     {
@@ -776,7 +776,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/documentation-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-25T17:30:54.849Z"
+        "fetchedAt": "2026-05-26T00:00:00.972Z"
       }
     },
     {
@@ -1185,7 +1185,644 @@
       "_source": {
         "url": "https://github.com/inference-gateway/google-calendar-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-25T17:30:54.849Z"
+        "fetchedAt": "2026-05-26T00:00:00.972Z"
+      }
+    },
+    {
+      "apiVersion": "adl.inference-gateway.com/v1",
+      "kind": "Agent",
+      "metadata": {
+        "name": "grafana-agent",
+        "description": "A2A agent server for grafana dashboards automation tasks",
+        "version": "0.2.1"
+      },
+      "spec": {
+        "capabilities": {
+          "streaming": true,
+          "pushNotifications": false,
+          "stateTransitionHistory": false
+        },
+        "config": {
+          "grafana": {
+            "deployEnabled": false,
+            "url": "",
+            "apiKey": "",
+            "orgID": ""
+          },
+          "tools": {
+            "read": {
+              "enabled": true
+            }
+          }
+        },
+        "services": {
+          "grafana": {
+            "type": "service",
+            "interface": "Grafana",
+            "factory": "NewGrafanaService",
+            "description": "Grafana service for accessing Grafana API"
+          },
+          "promql": {
+            "type": "service",
+            "interface": "PromQL",
+            "factory": "NewPromQLService",
+            "description": "PromQL service for building and validating Prometheus queries"
+          }
+        },
+        "agent": {
+          "provider": "",
+          "model": "",
+          "systemPrompt": "You are a Grafana expert. Your role is to guide users in designing highly effective, visually clear, and actionable dashboards.\nYou provide best practices for data visualization, panel configuration, query optimization, alerting, and overall dashboard usability.\nAlways offer practical examples and explain the reasoning behind your recommendations.\n\nWhen using Prometheus-related tools:\n- Use the PROMETHEUS_URL environment variable for prometheus_url parameters (default: http://prometheus.grafana-agent.svc.cluster.local:9090)\n- The Prometheus server is available at this internal Kubernetes service URL\n\nWhen using Grafana-related tools:\n- Use the GRAFANA_URL environment variable for grafana_url parameters if not explicitly provided by the user\n"
+        },
+        "tools": [
+          {
+            "id": "read"
+          },
+          {
+            "id": "discover_metrics",
+            "name": "discover_metrics",
+            "inject": [
+              "logger",
+              "promql"
+            ],
+            "description": "Discovers available metrics from a Prometheus endpoint with optional filtering",
+            "tags": [
+              "promql",
+              "prometheus",
+              "metrics",
+              "discovery"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prometheus_url": {
+                  "type": "string",
+                  "description": "Prometheus server URL to discover metrics from"
+                },
+                "name_pattern": {
+                  "type": "string",
+                  "description": "Optional regex pattern to filter metrics by name"
+                },
+                "metric_type": {
+                  "type": "string",
+                  "description": "Optional metric type filter (counter, gauge, histogram, summary)",
+                  "enum": [
+                    "counter",
+                    "gauge",
+                    "histogram",
+                    "summary"
+                  ]
+                }
+              },
+              "required": [
+                "prometheus_url"
+              ]
+            }
+          },
+          {
+            "id": "generate_promql_queries",
+            "name": "generate_promql_queries",
+            "inject": [
+              "logger",
+              "promql"
+            ],
+            "description": "Generates PromQL query suggestions for given metric names by querying Prometheus metadata",
+            "tags": [
+              "promql",
+              "prometheus",
+              "query",
+              "metrics"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prometheus_url": {
+                  "type": "string",
+                  "description": "Prometheus server URL for querying metric metadata"
+                },
+                "metric_names": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Array of metric names to generate queries for"
+                }
+              },
+              "required": [
+                "prometheus_url",
+                "metric_names"
+              ]
+            }
+          },
+          {
+            "id": "validate_promql_query",
+            "name": "validate_promql_query",
+            "inject": [
+              "logger",
+              "promql"
+            ],
+            "description": "Validates a PromQL query against a Prometheus server",
+            "tags": [
+              "promql",
+              "prometheus",
+              "validation"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prometheus_url": {
+                  "type": "string",
+                  "description": "Prometheus server URL to validate against"
+                },
+                "query": {
+                  "type": "string",
+                  "description": "PromQL query to validate"
+                }
+              },
+              "required": [
+                "prometheus_url",
+                "query"
+              ]
+            }
+          },
+          {
+            "id": "create_dashboard",
+            "name": "create_dashboard",
+            "inject": [
+              "logger",
+              "grafana",
+              "config.grafana"
+            ],
+            "description": "Creates a Grafana dashboard with specified panels, queries, and configurations",
+            "tags": [
+              "grafana",
+              "dashboard",
+              "visualization"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "dashboard_title": {
+                  "type": "string",
+                  "description": "The title of the Grafana dashboard"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of what the dashboard monitors or displays"
+                },
+                "grafana_url": {
+                  "type": "string",
+                  "description": "Grafana server URL (overrides default configuration if provided)"
+                },
+                "deploy": {
+                  "type": "boolean",
+                  "description": "Whether to deploy the dashboard to Grafana (requires grafana_url and GRAFANA_DEPLOY_ENABLED=true)"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Tags to categorize the dashboard"
+                },
+                "panels": {
+                  "type": "array",
+                  "description": "Array of panel configurations (title, type, queries, etc.)",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "time_range": {
+                  "type": "object",
+                  "description": "Default time range for the dashboard (from, to)",
+                  "properties": {
+                    "from": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "refresh_interval": {
+                  "type": "string",
+                  "description": "Auto-refresh interval (e.g., \"5s\", \"1m\", \"5m\")"
+                },
+                "variables": {
+                  "type": "array",
+                  "description": "Dashboard template variables for dynamic queries",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "required": [
+                "dashboard_title",
+                "panels"
+              ]
+            }
+          },
+          {
+            "id": "deploy_dashboard",
+            "name": "deploy_dashboard",
+            "inject": [
+              "logger",
+              "grafana",
+              "config.grafana"
+            ],
+            "description": "Deploys a dashboard JSON to Grafana (Cloud or self-hosted)",
+            "tags": [
+              "grafana",
+              "dashboard",
+              "deployment"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "dashboard_json": {
+                  "type": "object",
+                  "description": "The complete dashboard JSON object to deploy"
+                },
+                "grafana_url": {
+                  "type": "string",
+                  "description": "Grafana server URL (user provides in prompt or uses config default)"
+                },
+                "folder_uid": {
+                  "type": "string",
+                  "description": "Optional folder UID where the dashboard should be deployed"
+                },
+                "overwrite": {
+                  "type": "boolean",
+                  "description": "Whether to overwrite an existing dashboard with the same UID (default true)"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Optional commit message describing the dashboard changes"
+                }
+              },
+              "required": [
+                "dashboard_json"
+              ]
+            }
+          }
+        ],
+        "skills": [
+          {
+            "id": "promql",
+            "source": "https://github.com/grafana/skills/tree/6311c4f4d36db3c5a85686ef2b3ce5fed4e53c0c/skills/grafana-core/promql"
+          },
+          {
+            "id": "dashboarding",
+            "source": "https://github.com/grafana/skills/tree/6311c4f4d36db3c5a85686ef2b3ce5fed4e53c0c/skills/grafana-core/dashboarding"
+          }
+        ],
+        "server": {
+          "port": 8080,
+          "debug": false,
+          "scheme": "http"
+        },
+        "language": {
+          "go": {
+            "module": "github.com/inference-gateway/grafana-agent",
+            "version": "1.26.2",
+            "vendor": {
+              "deps": [
+                "github.com/stretchr/testify@v1.11.1"
+              ],
+              "devdeps": [
+                "github.com/maxbrunsfeld/counterfeiter/v6@v6.11.2"
+              ]
+            }
+          }
+        },
+        "hooks": {
+          "post": [
+            "go mod tidy",
+            "go fmt ./...",
+            "go generate ./..."
+          ]
+        },
+        "scm": {
+          "provider": "github",
+          "url": "https://github.com/inference-gateway/grafana-agent",
+          "github_app": true,
+          "issue_templates": false,
+          "dependabot": true,
+          "ci": true,
+          "cd": true
+        },
+        "development": {
+          "sandbox": {
+            "flox": {
+              "enabled": true
+            },
+            "devcontainer": {
+              "enabled": false
+            },
+            "dockerCompose": {
+              "enabled": true
+            }
+          },
+          "ai": {
+            "claudecode": {
+              "enabled": true
+            },
+            "infer": {
+              "enabled": true
+            },
+            "codex": {
+              "enabled": false
+            },
+            "gemini": {
+              "enabled": false
+            },
+            "opencode": {
+              "enabled": false
+            }
+          },
+          "deps": []
+        }
+      },
+      "_source": {
+        "url": "https://github.com/inference-gateway/grafana-agent",
+        "ref": "main",
+        "fetchedAt": "2026-05-26T00:00:00.972Z"
+      }
+    },
+    {
+      "apiVersion": "adl.inference-gateway.com/v1",
+      "kind": "Agent",
+      "metadata": {
+        "name": "mock-agent",
+        "description": "A2A agent server for mocking and testing. Uses a mock LLM client - no API keys required!",
+        "version": "0.1.10"
+      },
+      "spec": {
+        "capabilities": {
+          "streaming": true,
+          "pushNotifications": false,
+          "stateTransitionHistory": false
+        },
+        "artifacts": {
+          "enabled": true
+        },
+        "agent": {
+          "provider": "",
+          "model": "",
+          "systemPrompt": "You are a mock AI assistant designed for testing and development purposes.\n\nYou have access to several mock tools that demonstrate different testing scenarios:\n- echo: Simply echo back the input message (useful for basic connectivity tests)\n- delay: Simulate slow responses with configurable delays\n- error: Simulate error conditions for testing error handling\n- random_data: Generate random test data\n- validate: Validate input against common patterns\n\nWhen responding:\n- Be clear and predictable in your responses\n- Include relevant metadata about the request\n- Support both streaming and non-streaming modes\n- Handle edge cases gracefully\n\nYour purpose is to provide consistent, reproducible responses for testing A2A protocol implementations.\n"
+        },
+        "config": {
+          "tools": {
+            "read": {
+              "enabled": true,
+              "max_lines": 2000
+            }
+          }
+        },
+        "tools": [
+          {
+            "id": "read"
+          },
+          {
+            "id": "echo",
+            "name": "echo",
+            "description": "Echo back the input message (useful for basic connectivity tests)",
+            "tags": [
+              "mock",
+              "testing",
+              "echo"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "The message to echo back"
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          },
+          {
+            "id": "delay",
+            "name": "delay",
+            "description": "Simulate slow responses with configurable delays",
+            "tags": [
+              "mock",
+              "testing",
+              "performance"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "duration_seconds": {
+                  "type": "number",
+                  "description": "Number of seconds to delay (default 2)"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Message to return after delay"
+                }
+              }
+            }
+          },
+          {
+            "id": "error",
+            "name": "error",
+            "description": "Simulate error conditions for testing error handling",
+            "tags": [
+              "mock",
+              "testing",
+              "error-handling"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error_type": {
+                  "type": "string",
+                  "description": "Type of error to simulate",
+                  "enum": [
+                    "validation",
+                    "timeout",
+                    "internal",
+                    "not_found"
+                  ]
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Custom error message"
+                }
+              },
+              "required": [
+                "error_type"
+              ]
+            }
+          },
+          {
+            "id": "random_data",
+            "name": "random_data",
+            "description": "Generate random test data",
+            "tags": [
+              "mock",
+              "testing",
+              "data-generation"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data_type": {
+                  "type": "string",
+                  "description": "Type of data to generate",
+                  "enum": [
+                    "uuid",
+                    "email",
+                    "name",
+                    "number",
+                    "json"
+                  ]
+                },
+                "count": {
+                  "type": "number",
+                  "description": "Number of items to generate (default 1)"
+                }
+              },
+              "required": [
+                "data_type"
+              ]
+            }
+          },
+          {
+            "id": "validate",
+            "name": "validate",
+            "description": "Validate input against common patterns",
+            "tags": [
+              "mock",
+              "testing",
+              "validation"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "input": {
+                  "type": "string",
+                  "description": "The input to validate"
+                },
+                "validation_type": {
+                  "type": "string",
+                  "description": "Type of validation",
+                  "enum": [
+                    "email",
+                    "url",
+                    "json",
+                    "uuid",
+                    "phone"
+                  ]
+                }
+              },
+              "required": [
+                "input",
+                "validation_type"
+              ]
+            }
+          }
+        ],
+        "skills": [
+          {
+            "id": "connectivity-check",
+            "bare": true,
+            "name": "connectivity-check",
+            "description": "Use this when the user wants to verify the agent is reachable and responding correctly. Invokes the echo tool with a known payload and confirms the round-trip succeeded.",
+            "tags": [
+              "mock",
+              "testing",
+              "connectivity"
+            ]
+          },
+          {
+            "id": "error-injection",
+            "bare": true,
+            "name": "error-injection",
+            "description": "Use this when the user wants to test how their client handles different failure modes. Invokes the error tool across the supported error_type values (validation, timeout, internal, not_found) so the caller can observe each error path.",
+            "tags": [
+              "mock",
+              "testing",
+              "error-handling"
+            ]
+          },
+          {
+            "id": "load-simulation",
+            "bare": true,
+            "name": "load-simulation",
+            "description": "Use this when the user wants to test client behavior under slow responses with realistic payloads. Combines the delay tool (to introduce latency) with the random_data tool (to produce a test payload of the requested shape).",
+            "tags": [
+              "mock",
+              "testing",
+              "performance"
+            ]
+          }
+        ],
+        "server": {
+          "port": 8080,
+          "scheme": "http",
+          "debug": false
+        },
+        "language": {
+          "go": {
+            "module": "github.com/inference-gateway/mock-agent",
+            "version": "1.26.2",
+            "vendor": {
+              "deps": [],
+              "devdeps": []
+            }
+          }
+        },
+        "scm": {
+          "provider": "github",
+          "url": "https://github.com/inference-gateway/mock-agent",
+          "github_app": true,
+          "issue_templates": false,
+          "dependabot": true,
+          "ci": true,
+          "cd": true
+        },
+        "development": {
+          "sandbox": {
+            "flox": {
+              "enabled": true
+            },
+            "devcontainer": {
+              "enabled": false
+            },
+            "dockerCompose": {
+              "enabled": true
+            }
+          },
+          "ai": {
+            "claudecode": {
+              "enabled": true
+            },
+            "codex": {
+              "enabled": false
+            },
+            "gemini": {
+              "enabled": false
+            },
+            "opencode": {
+              "enabled": false
+            },
+            "infer": {
+              "enabled": true
+            }
+          },
+          "deps": []
+        }
+      },
+      "_source": {
+        "url": "https://github.com/inference-gateway/mock-agent",
+        "ref": "main",
+        "fetchedAt": "2026-05-26T00:00:00.972Z"
       }
     },
     {
@@ -1369,7 +2006,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/n8n-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-25T17:30:54.849Z"
+        "fetchedAt": "2026-05-26T00:00:00.972Z"
       }
     }
   ]
