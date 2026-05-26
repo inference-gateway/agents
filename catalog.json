@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-05-26T00:00:00.972Z",
+  "updated": "2026-05-26T01:40:49.453Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -8,7 +8,7 @@
       "metadata": {
         "name": "browser-agent",
         "description": "AI agent for browser automation and web testing using Playwright",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       "spec": {
         "capabilities": {
@@ -596,7 +596,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/browser-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-26T00:00:00.972Z"
+        "fetchedAt": "2026-05-26T01:40:49.453Z"
       }
     },
     {
@@ -605,7 +605,7 @@
       "metadata": {
         "name": "documentation-agent",
         "description": "A2A agent server that provides Context7-style documentation capabilities for your agents",
-        "version": "0.2.31"
+        "version": "0.2.32"
       },
       "spec": {
         "capabilities": {
@@ -776,7 +776,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/documentation-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-26T00:00:00.972Z"
+        "fetchedAt": "2026-05-26T01:40:49.453Z"
       }
     },
     {
@@ -785,7 +785,7 @@
       "metadata": {
         "name": "google-calendar-agent",
         "description": "A Google Calendar A2A agent for AI assistants to interact with Google Calendar",
-        "version": "0.4.28"
+        "version": "0.4.29"
       },
       "spec": {
         "capabilities": {
@@ -1185,7 +1185,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/google-calendar-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-26T00:00:00.972Z"
+        "fetchedAt": "2026-05-26T01:40:49.453Z"
       }
     },
     {
@@ -1194,7 +1194,7 @@
       "metadata": {
         "name": "grafana-agent",
         "description": "A2A agent server for grafana dashboards automation tasks",
-        "version": "0.2.1"
+        "version": "0.2.2"
       },
       "spec": {
         "capabilities": {
@@ -1546,7 +1546,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/grafana-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-26T00:00:00.972Z"
+        "fetchedAt": "2026-05-26T01:40:49.453Z"
       }
     },
     {
@@ -1555,7 +1555,7 @@
       "metadata": {
         "name": "mock-agent",
         "description": "A2A agent server for mocking and testing. Uses a mock LLM client - no API keys required!",
-        "version": "0.1.10"
+        "version": "0.1.11"
       },
       "spec": {
         "capabilities": {
@@ -1822,7 +1822,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/mock-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-26T00:00:00.972Z"
+        "fetchedAt": "2026-05-26T01:40:49.453Z"
       }
     },
     {
@@ -1831,7 +1831,7 @@
       "metadata": {
         "name": "n8n-agent",
         "description": "A2A agent server specialized in generating and automating n8n workflows",
-        "version": "0.2.6"
+        "version": "0.2.7"
       },
       "spec": {
         "capabilities": {
@@ -2006,7 +2006,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/n8n-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-26T00:00:00.972Z"
+        "fetchedAt": "2026-05-26T01:40:49.453Z"
       }
     }
   ]

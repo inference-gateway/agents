@@ -137,7 +137,14 @@ async function main() {
     agents,
   };
 
-  writeFileSync(OUTPUT_FILE, JSON.stringify(catalog, null, 2) + '\n');
+  const serialized = JSON.stringify(catalog, null, 2) + '\n';
+  try {
+    JSON.parse(serialized);
+  } catch (err) {
+    throw new Error(`Refusing to overwrite ${OUTPUT_FILE}: serialized catalog is not valid JSON: ${err.message}`);
+  }
+
+  writeFileSync(OUTPUT_FILE, serialized);
   console.log(`Wrote ${agents.length} agents to ${OUTPUT_FILE}`);
 }
 
