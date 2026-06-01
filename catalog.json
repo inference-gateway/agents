@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-05-30T05:16:41.248Z",
+  "updated": "2026-06-01T05:36:27.830Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -574,20 +574,22 @@
             }
           },
           "ai": {
-            "claudecode": {
-              "enabled": true
-            },
-            "infer": {
-              "enabled": true
-            },
-            "codex": {
-              "enabled": false
-            },
-            "gemini": {
-              "enabled": false
-            },
-            "opencode": {
-              "enabled": false
+            "orchestrators": {
+              "claudecode": {
+                "enabled": true
+              },
+              "infer": {
+                "enabled": true
+              },
+              "codex": {
+                "enabled": false
+              },
+              "gemini": {
+                "enabled": false
+              },
+              "opencode": {
+                "enabled": false
+              }
             }
           },
           "deps": []
@@ -596,7 +598,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/browser-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-30T05:16:41.248Z"
+        "fetchedAt": "2026-06-01T05:36:27.830Z"
       }
     },
     {
@@ -754,20 +756,22 @@
             }
           },
           "ai": {
-            "claudecode": {
-              "enabled": true
-            },
-            "infer": {
-              "enabled": true
-            },
-            "codex": {
-              "enabled": false
-            },
-            "gemini": {
-              "enabled": false
-            },
-            "opencode": {
-              "enabled": false
+            "orchestrators": {
+              "claudecode": {
+                "enabled": true
+              },
+              "infer": {
+                "enabled": true
+              },
+              "codex": {
+                "enabled": false
+              },
+              "gemini": {
+                "enabled": false
+              },
+              "opencode": {
+                "enabled": false
+              }
             }
           },
           "deps": []
@@ -776,7 +780,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/documentation-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-30T05:16:41.248Z"
+        "fetchedAt": "2026-06-01T05:36:27.830Z"
       }
     },
     {
@@ -1163,20 +1167,22 @@
             }
           },
           "ai": {
-            "claudecode": {
-              "enabled": true
-            },
-            "infer": {
-              "enabled": true
-            },
-            "codex": {
-              "enabled": false
-            },
-            "gemini": {
-              "enabled": false
-            },
-            "opencode": {
-              "enabled": false
+            "orchestrators": {
+              "claudecode": {
+                "enabled": true
+              },
+              "infer": {
+                "enabled": true
+              },
+              "codex": {
+                "enabled": false
+              },
+              "gemini": {
+                "enabled": false
+              },
+              "opencode": {
+                "enabled": false
+              }
             }
           },
           "deps": []
@@ -1185,7 +1191,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/google-calendar-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-30T05:16:41.248Z"
+        "fetchedAt": "2026-06-01T05:36:27.830Z"
       }
     },
     {
@@ -1524,20 +1530,22 @@
             }
           },
           "ai": {
-            "claudecode": {
-              "enabled": true
-            },
-            "infer": {
-              "enabled": true
-            },
-            "codex": {
-              "enabled": false
-            },
-            "gemini": {
-              "enabled": false
-            },
-            "opencode": {
-              "enabled": false
+            "orchestrators": {
+              "claudecode": {
+                "enabled": true
+              },
+              "infer": {
+                "enabled": true
+              },
+              "codex": {
+                "enabled": false
+              },
+              "gemini": {
+                "enabled": false
+              },
+              "opencode": {
+                "enabled": false
+              }
             }
           },
           "deps": []
@@ -1546,7 +1554,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/grafana-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-30T05:16:41.248Z"
+        "fetchedAt": "2026-06-01T05:36:27.830Z"
       }
     },
     {
@@ -1800,20 +1808,22 @@
             }
           },
           "ai": {
-            "claudecode": {
-              "enabled": true
-            },
-            "codex": {
-              "enabled": false
-            },
-            "gemini": {
-              "enabled": false
-            },
-            "opencode": {
-              "enabled": false
-            },
-            "infer": {
-              "enabled": true
+            "orchestrators": {
+              "claudecode": {
+                "enabled": true
+              },
+              "codex": {
+                "enabled": false
+              },
+              "gemini": {
+                "enabled": false
+              },
+              "opencode": {
+                "enabled": false
+              },
+              "infer": {
+                "enabled": true
+              }
             }
           },
           "deps": []
@@ -1822,7 +1832,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/mock-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-30T05:16:41.248Z"
+        "fetchedAt": "2026-06-01T05:36:27.830Z"
       }
     },
     {
@@ -1982,20 +1992,22 @@
             }
           },
           "ai": {
-            "claudecode": {
-              "enabled": true
-            },
-            "infer": {
-              "enabled": true
-            },
-            "codex": {
-              "enabled": false
-            },
-            "gemini": {
-              "enabled": false
-            },
-            "opencode": {
-              "enabled": false
+            "orchestrators": {
+              "claudecode": {
+                "enabled": true
+              },
+              "infer": {
+                "enabled": true
+              },
+              "codex": {
+                "enabled": false
+              },
+              "gemini": {
+                "enabled": false
+              },
+              "opencode": {
+                "enabled": false
+              }
             }
           },
           "deps": [
@@ -2006,7 +2018,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/n8n-agent",
         "ref": "main",
-        "fetchedAt": "2026-05-30T05:16:41.248Z"
+        "fetchedAt": "2026-06-01T05:36:27.830Z"
       }
     }
   ]
