@@ -3,7 +3,7 @@ schema-version = "1.13.0"
 [install]
 nodejs.pkg-path = "nodejs_24"
 nodejs.version = "24.15.0"
-infer.flake = "github:inference-gateway/cli/v0.121.1"
+infer.flake = "github:inference-gateway/cli/v0.122.2"
 claude-code.pkg-path = "claude-code"
 claude-code.version = "^2.1.177"
 claude-code.pkg-group = "claude-code"
