@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-07-17T23:30:44.942Z",
+  "updated": "2026-07-17T23:27:58.486Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -596,7 +596,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/browser-agent",
         "ref": "v0.6.4",
-        "fetchedAt": "2026-07-17T23:30:44.942Z"
+        "fetchedAt": "2026-07-17T23:27:58.486Z"
       }
     },
     {
@@ -832,7 +832,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/documentation-agent",
         "ref": "v0.3.0",
-        "fetchedAt": "2026-07-17T23:30:44.942Z"
+        "fetchedAt": "2026-07-17T23:27:58.486Z"
       }
     },
     {
@@ -1297,7 +1297,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/google-calendar-agent",
         "ref": "v0.5.0",
-        "fetchedAt": "2026-07-17T23:30:44.942Z"
+        "fetchedAt": "2026-07-17T23:27:58.486Z"
       }
     },
     {
@@ -1714,7 +1714,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/grafana-agent",
         "ref": "v0.3.0",
-        "fetchedAt": "2026-07-17T23:30:44.942Z"
+        "fetchedAt": "2026-07-17T23:27:58.486Z"
       }
     },
     {
@@ -2094,7 +2094,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/mock-agent",
         "ref": "v0.3.3",
-        "fetchedAt": "2026-07-17T23:30:44.942Z"
+        "fetchedAt": "2026-07-17T23:27:58.486Z"
       }
     },
     {
@@ -2347,7 +2347,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/n8n-agent",
         "ref": "v0.3.0",
-        "fetchedAt": "2026-07-17T23:30:44.942Z"
+        "fetchedAt": "2026-07-17T23:27:58.486Z"
       }
     }
   ]
