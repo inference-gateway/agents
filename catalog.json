@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-07-17T22:17:37.349Z",
+  "updated": "2026-07-17T23:28:12.255Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -8,7 +8,7 @@
       "metadata": {
         "name": "browser-agent",
         "description": "AI agent for browser automation and web testing using Playwright",
-        "version": "0.7.0"
+        "version": "0.6.4"
       },
       "spec": {
         "capabilities": {
@@ -531,23 +531,14 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/browser-agent",
-            "version": "1.26.4",
+            "version": "1.26.2",
             "vendor": {
-              "deps": [
-                "github.com/playwright-community/playwright-go@v0.6000.0",
-                "github.com/jonfriesen/playwright-go-stealth@v0.0.3",
-                "github.com/stretchr/testify@v1.11.1"
-              ],
+              "deps": [],
               "devdeps": [
                 "github.com/maxbrunsfeld/counterfeiter/v6@v6.12.2"
               ]
             }
           }
-        },
-        "hooks": {
-          "post": [
-            "go mod tidy"
-          ]
         },
         "acronyms": [
           "DOM",
@@ -565,65 +556,10 @@
           "issue_templates": false,
           "dependabot": true,
           "ci": true,
-          "cd": true,
-          "app_id_secret": "RELEASER_APP_ID",
-          "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
+          "cd": true
         },
-        "documentation": {
-          "pages": [
-            {
-              "title": "Getting Started",
-              "path": "docs/getting-started.md",
-              "description": "Build, run, and verify the agent locally or with Docker."
-            },
-            {
-              "title": "Configuration",
-              "path": "docs/configuration.md",
-              "description": "Environment variables for the LLM provider, server, browser, and tools."
-            },
-            {
-              "title": "Usage",
-              "path": "docs/usage.md",
-              "description": "Submitting tasks and driving the agent's tools and skills."
-            },
-            {
-              "title": "Playwright Service",
-              "path": "docs/playwright-service.md",
-              "description": "The browser-automation service that backs the agent's tools."
-            }
-          ]
-        },
-        "examples": [
-          {
-            "title": "End-to-end webapp testing",
-            "description": "Ask the agent to verify a web app flow. It navigates to the page, screenshots the rendered DOM to discover selectors, then drives the flow with navigate_to_url, click_element, fill_form, and wait_for_condition, capturing a screenshot at each checkpoint."
-          },
-          {
-            "title": "Structured web scraping",
-            "description": "Point the agent at one or more (optionally paginated) pages. It uses extract_data to pull fields into structured records, normalizes them, and writes a downloadable JSON or CSV artifact via the write tool."
-          },
-          {
-            "title": "Authenticated form automation",
-            "description": "Hand the agent a multi-step form behind a login. It chains handle_authentication, fill_form, and click_element, waits for the post-submit state with wait_for_condition, and returns a screenshot of the confirmation page."
-          },
-          {
-            "title": "Cited deep research",
-            "description": "Give the agent an open-ended question. It plans sub-questions, drives a search engine, cross-references multiple sources with navigate_to_url and extract_data, and writes a cited Markdown report with the write tool."
-          }
-        ],
         "artifacts": {
           "enabled": true
-        },
-        "telemetry": {
-          "enabled": true,
-          "metrics": {
-            "exporter": {
-              "prometheus": {
-                "host": "",
-                "port": 9464
-              }
-            }
-          }
         },
         "development": {
           "sandbox": {
@@ -638,26 +574,20 @@
             }
           },
           "ai": {
-            "orchestrators": {
-              "claudecode": {
-                "enabled": true,
-                "appIdSecret": "CLAUDE_APP_ID",
-                "appPrivateKeySecret": "CLAUDE_APP_PRIVATE_KEY"
-              },
-              "infer": {
-                "enabled": true,
-                "appIdSecret": "INFER_APP_ID",
-                "appPrivateKeySecret": "INFER_APP_PRIVATE_KEY"
-              },
-              "codex": {
-                "enabled": false
-              },
-              "gemini": {
-                "enabled": false
-              },
-              "opencode": {
-                "enabled": false
-              }
+            "claudecode": {
+              "enabled": true
+            },
+            "infer": {
+              "enabled": true
+            },
+            "codex": {
+              "enabled": false
+            },
+            "gemini": {
+              "enabled": false
+            },
+            "opencode": {
+              "enabled": false
             }
           },
           "deps": []
@@ -665,8 +595,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/browser-agent",
-        "ref": "main",
-        "fetchedAt": "2026-07-17T22:17:37.349Z"
+        "ref": "v0.6.4",
+        "fetchedAt": "2026-07-17T23:28:12.255Z"
       }
     },
     {
@@ -901,8 +831,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/documentation-agent",
-        "ref": "main",
-        "fetchedAt": "2026-07-17T22:17:37.349Z"
+        "ref": "v0.3.0",
+        "fetchedAt": "2026-07-17T23:28:12.255Z"
       }
     },
     {
@@ -1366,8 +1296,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/google-calendar-agent",
-        "ref": "main",
-        "fetchedAt": "2026-07-17T22:17:37.349Z"
+        "ref": "v0.5.0",
+        "fetchedAt": "2026-07-17T23:28:12.255Z"
       }
     },
     {
@@ -1783,8 +1713,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/grafana-agent",
-        "ref": "main",
-        "fetchedAt": "2026-07-17T22:17:37.349Z"
+        "ref": "v0.3.0",
+        "fetchedAt": "2026-07-17T23:28:12.255Z"
       }
     },
     {
@@ -2163,8 +2093,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/mock-agent",
-        "ref": "main",
-        "fetchedAt": "2026-07-17T22:17:37.349Z"
+        "ref": "v0.3.3",
+        "fetchedAt": "2026-07-17T23:28:12.255Z"
       }
     },
     {
@@ -2416,8 +2346,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/n8n-agent",
-        "ref": "main",
-        "fetchedAt": "2026-07-17T22:17:37.349Z"
+        "ref": "v0.3.0",
+        "fetchedAt": "2026-07-17T23:28:12.255Z"
       }
     }
   ]
