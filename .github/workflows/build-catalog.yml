@@ -50,7 +50,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           commit-message: 'chore(catalog): Rebuild catalog.json [skip ci]'
           branch: catalog/update
-          title: 'chore(catalog): Rebuild catalog.json'
+          title: 'chore(catalog): rebuild catalog.json'
           body: |
             Automated catalog rebuild from upstream agent manifests.
           add-paths: catalog.json
