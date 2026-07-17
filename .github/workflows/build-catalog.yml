@@ -32,12 +32,6 @@ jobs:
           repositories: |
             ${{ github.event.repository.name }}
 
-      - name: Get GitHub App User ID
-        id: get-user-id
-        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-
       - uses: actions/checkout@v7.0.0
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -52,47 +46,14 @@ jobs:
       - run: npm run build
 
       - name: Create or update pull request with catalog changes
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          if ! git diff --quiet -- catalog.json; then
-            git config user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
-            git config user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
-
-            # Check if there's already an open catalog PR
-            EXISTING_PR=$(gh pr list \
-              --state open \
-              --head 'catalog/' \
-              --json headRefName,number \
-              --jq '.[0] // empty' \
-              --limit 1)
-
-            if [ -n "$EXISTING_PR" ]; then
-              BRANCH=$(echo "$EXISTING_PR" | jq -r '.headRefName')
-              PR_NUMBER=$(echo "$EXISTING_PR" | jq -r '.number')
-              echo "Updating existing PR #$PR_NUMBER on branch $BRANCH"
-
-              git checkout "$BRANCH"
-              git add catalog.json
-              git commit -m "chore(catalog): Rebuild catalog.json [skip ci]"
-              git push --force origin "$BRANCH"
-
-              gh pr comment "$PR_NUMBER" --body "Updated catalog.json with latest upstream manifests."
-            else
-              BRANCH="catalog/update-$(date +%Y%m%d%H%M%S)"
-              echo "Creating new PR on branch $BRANCH"
-
-              git checkout -b "$BRANCH"
-              git add catalog.json
-              git commit -m "chore(catalog): Rebuild catalog.json [skip ci]"
-              git push origin "$BRANCH"
-
-              gh pr create \
-                --title "chore(catalog): Rebuild catalog.json" \
-                --body "Automated catalog rebuild from upstream agent manifests." \
-                --base main \
-                --head "$BRANCH"
-            fi
-          else
-            echo "No catalog changes to commit."
-          fi
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: 'chore(catalog): Rebuild catalog.json [skip ci]'
+          branch: catalog/update
+          title: 'chore(catalog): Rebuild catalog.json'
+          body: |
+            Automated catalog rebuild from upstream agent manifests.
+          add-paths: catalog.json
+          base: main
