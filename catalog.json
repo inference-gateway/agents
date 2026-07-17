@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-06-06T05:17:20.916Z",
+  "updated": "2026-07-17T21:48:58.712Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -8,7 +8,7 @@
       "metadata": {
         "name": "browser-agent",
         "description": "AI agent for browser automation and web testing using Playwright",
-        "version": "0.6.4"
+        "version": "0.7.0"
       },
       "spec": {
         "capabilities": {
@@ -531,14 +531,23 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/browser-agent",
-            "version": "1.26.2",
+            "version": "1.26.4",
             "vendor": {
-              "deps": [],
+              "deps": [
+                "github.com/playwright-community/playwright-go@v0.6000.0",
+                "github.com/jonfriesen/playwright-go-stealth@v0.0.3",
+                "github.com/stretchr/testify@v1.11.1"
+              ],
               "devdeps": [
                 "github.com/maxbrunsfeld/counterfeiter/v6@v6.12.2"
               ]
             }
           }
+        },
+        "hooks": {
+          "post": [
+            "go mod tidy"
+          ]
         },
         "acronyms": [
           "DOM",
@@ -556,10 +565,65 @@
           "issue_templates": false,
           "dependabot": true,
           "ci": true,
-          "cd": true
+          "cd": true,
+          "app_id_secret": "RELEASER_APP_ID",
+          "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
         },
+        "documentation": {
+          "pages": [
+            {
+              "title": "Getting Started",
+              "path": "docs/getting-started.md",
+              "description": "Build, run, and verify the agent locally or with Docker."
+            },
+            {
+              "title": "Configuration",
+              "path": "docs/configuration.md",
+              "description": "Environment variables for the LLM provider, server, browser, and tools."
+            },
+            {
+              "title": "Usage",
+              "path": "docs/usage.md",
+              "description": "Submitting tasks and driving the agent's tools and skills."
+            },
+            {
+              "title": "Playwright Service",
+              "path": "docs/playwright-service.md",
+              "description": "The browser-automation service that backs the agent's tools."
+            }
+          ]
+        },
+        "examples": [
+          {
+            "title": "End-to-end webapp testing",
+            "description": "Ask the agent to verify a web app flow. It navigates to the page, screenshots the rendered DOM to discover selectors, then drives the flow with navigate_to_url, click_element, fill_form, and wait_for_condition, capturing a screenshot at each checkpoint."
+          },
+          {
+            "title": "Structured web scraping",
+            "description": "Point the agent at one or more (optionally paginated) pages. It uses extract_data to pull fields into structured records, normalizes them, and writes a downloadable JSON or CSV artifact via the write tool."
+          },
+          {
+            "title": "Authenticated form automation",
+            "description": "Hand the agent a multi-step form behind a login. It chains handle_authentication, fill_form, and click_element, waits for the post-submit state with wait_for_condition, and returns a screenshot of the confirmation page."
+          },
+          {
+            "title": "Cited deep research",
+            "description": "Give the agent an open-ended question. It plans sub-questions, drives a search engine, cross-references multiple sources with navigate_to_url and extract_data, and writes a cited Markdown report with the write tool."
+          }
+        ],
         "artifacts": {
           "enabled": true
+        },
+        "telemetry": {
+          "enabled": true,
+          "metrics": {
+            "exporter": {
+              "prometheus": {
+                "host": "",
+                "port": 9464
+              }
+            }
+          }
         },
         "development": {
           "sandbox": {
@@ -576,10 +640,14 @@
           "ai": {
             "orchestrators": {
               "claudecode": {
-                "enabled": true
+                "enabled": true,
+                "appIdSecret": "CLAUDE_APP_ID",
+                "appPrivateKeySecret": "CLAUDE_APP_PRIVATE_KEY"
               },
               "infer": {
-                "enabled": true
+                "enabled": true,
+                "appIdSecret": "INFER_APP_ID",
+                "appPrivateKeySecret": "INFER_APP_PRIVATE_KEY"
               },
               "codex": {
                 "enabled": false
@@ -598,7 +666,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/browser-agent",
         "ref": "main",
-        "fetchedAt": "2026-06-06T05:17:20.916Z"
+        "fetchedAt": "2026-07-17T21:48:58.712Z"
       }
     },
     {
@@ -607,7 +675,7 @@
       "metadata": {
         "name": "documentation-agent",
         "description": "A2A agent server that provides Context7-style documentation capabilities for your agents",
-        "version": "0.2.32"
+        "version": "0.3.0"
       },
       "spec": {
         "capabilities": {
@@ -633,6 +701,17 @@
           "systemPrompt": "You are an intelligent documentation retrieval assistant that specializes in finding and fetching relevant documentation from Context7-compatible sources. You can resolve library names to their proper identifiers and retrieve targeted documentation based on specific topics or requirements.\n",
           "maxTokens": 4096,
           "temperature": 0.7
+        },
+        "telemetry": {
+          "enabled": true,
+          "metrics": {
+            "exporter": {
+              "prometheus": {
+                "host": "",
+                "port": 9464
+              }
+            }
+          }
         },
         "config": {
           "tools": {
@@ -727,13 +806,50 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/documentation-agent",
-            "version": "1.26.2",
+            "version": "1.26.4",
             "vendor": {
               "deps": [],
               "devdeps": []
             }
           }
         },
+        "documentation": {
+          "pages": [
+            {
+              "title": "Getting Started",
+              "path": "docs/getting-started.md",
+              "description": "Install, configure an LLM provider, run the agent, and send your first documentation query."
+            },
+            {
+              "title": "Configuration",
+              "path": "docs/configuration.md",
+              "description": "Environment variables and LLM provider settings specific to this agent."
+            },
+            {
+              "title": "Usage",
+              "path": "docs/usage.md",
+              "description": "How the resolve_library_id and get_library_docs tools and the library-documentation-lookup skill work together."
+            }
+          ]
+        },
+        "examples": [
+          {
+            "title": "Resolve a library name to a Context7 ID",
+            "description": "Ask \"What is the Context7 ID for Next.js?\" and the agent calls resolve_library_id to return matching libraries with their '/org/project' identifiers."
+          },
+          {
+            "title": "Fetch topic-scoped documentation for a library",
+            "description": "Ask \"How do I set up JWT auth in Express.js?\" and the agent resolves the library, then calls get_library_docs to return focused, up-to-date documentation for that specific topic."
+          },
+          {
+            "title": "Look up version-specific API behavior",
+            "description": "Provide a versioned ID such as '/vercel/next.js/v14.3.0-canary.87' and ask about the App Router; the agent fetches documentation scoped to that exact version."
+          },
+          {
+            "title": "End-to-end library documentation lookup",
+            "description": "Give a bare library name and a question; the library-documentation-lookup skill guides the agent to resolve the ID first, then retrieve the relevant docs in a single flow."
+          }
+        ],
         "scm": {
           "provider": "github",
           "url": "https://github.com/inference-gateway/documentation-agent",
@@ -741,7 +857,9 @@
           "issue_templates": false,
           "dependabot": true,
           "ci": true,
-          "cd": true
+          "cd": true,
+          "app_id_secret": "RELEASER_APP_ID",
+          "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
         },
         "development": {
           "sandbox": {
@@ -758,10 +876,14 @@
           "ai": {
             "orchestrators": {
               "claudecode": {
-                "enabled": true
+                "enabled": true,
+                "appIdSecret": "CLAUDE_APP_ID",
+                "appPrivateKeySecret": "CLAUDE_APP_PRIVATE_KEY"
               },
               "infer": {
-                "enabled": true
+                "enabled": true,
+                "appIdSecret": "INFER_APP_ID",
+                "appPrivateKeySecret": "INFER_APP_PRIVATE_KEY"
               },
               "codex": {
                 "enabled": false
@@ -780,7 +902,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/documentation-agent",
         "ref": "main",
-        "fetchedAt": "2026-06-06T05:17:20.916Z"
+        "fetchedAt": "2026-07-17T21:48:58.712Z"
       }
     },
     {
@@ -789,7 +911,7 @@
       "metadata": {
         "name": "google-calendar-agent",
         "description": "A Google Calendar A2A agent for AI assistants to interact with Google Calendar",
-        "version": "0.4.29"
+        "version": "0.5.0"
       },
       "spec": {
         "capabilities": {
@@ -1131,10 +1253,21 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/google-calendar-agent",
-            "version": "1.26.2",
+            "version": "1.26.4",
             "vendor": {
               "deps": [],
               "devdeps": []
+            }
+          }
+        },
+        "telemetry": {
+          "enabled": true,
+          "metrics": {
+            "exporter": {
+              "prometheus": {
+                "host": "",
+                "port": 9464
+              }
             }
           }
         },
@@ -1152,7 +1285,9 @@
           "issue_templates": false,
           "dependabot": true,
           "ci": true,
-          "cd": true
+          "cd": true,
+          "app_id_secret": "RELEASER_APP_ID",
+          "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
         },
         "development": {
           "sandbox": {
@@ -1169,10 +1304,14 @@
           "ai": {
             "orchestrators": {
               "claudecode": {
-                "enabled": true
+                "enabled": true,
+                "appIdSecret": "CLAUDE_APP_ID",
+                "appPrivateKeySecret": "CLAUDE_APP_PRIVATE_KEY"
               },
               "infer": {
-                "enabled": true
+                "enabled": true,
+                "appIdSecret": "INFER_APP_ID",
+                "appPrivateKeySecret": "INFER_APP_PRIVATE_KEY"
               },
               "codex": {
                 "enabled": false
@@ -1186,12 +1325,49 @@
             }
           },
           "deps": []
+        },
+        "examples": [
+          {
+            "title": "List upcoming events",
+            "description": "Ask \"What's on my calendar this week?\" and the agent calls list_calendar_events to return your upcoming events with their times, locations, and attendees."
+          },
+          {
+            "title": "Schedule a conflict-free meeting",
+            "description": "Ask \"Schedule a 30-minute sync with alice@example.com tomorrow afternoon.\" The schedule-meeting skill chains find_available_time, check_conflicts, and create_calendar_event to book a slot that does not overlap anything already on the calendar."
+          },
+          {
+            "title": "Find a free time slot",
+            "description": "Ask \"Find a free 1-hour slot on Thursday\" and the agent uses find_available_time to propose open windows, anchoring \"Thursday\" to your timezone with get_current_datetime first."
+          },
+          {
+            "title": "Reschedule or cancel an event",
+            "description": "Ask \"Move my 2 PM meeting to 3 PM\" or \"Cancel my standup tomorrow\"; the agent looks the event up with get_calendar_event and then calls update_calendar_event or delete_calendar_event."
+          }
+        ],
+        "documentation": {
+          "pages": [
+            {
+              "title": "Setup",
+              "path": "docs/setup.md",
+              "description": "Install, build, and run the Google Calendar agent."
+            },
+            {
+              "title": "Configuration",
+              "path": "docs/configuration.md",
+              "description": "Environment variables for the LLM client, Google Calendar credentials, mock mode, and the server."
+            },
+            {
+              "title": "Usage",
+              "path": "docs/usage.md",
+              "description": "Available calendar tools, the schedule-meeting skill, timezone handling, and example requests."
+            }
+          ]
         }
       },
       "_source": {
         "url": "https://github.com/inference-gateway/google-calendar-agent",
         "ref": "main",
-        "fetchedAt": "2026-06-06T05:17:20.916Z"
+        "fetchedAt": "2026-07-17T21:48:58.712Z"
       }
     },
     {
@@ -1200,7 +1376,7 @@
       "metadata": {
         "name": "grafana-agent",
         "description": "A2A agent server for grafana dashboards automation tasks",
-        "version": "0.2.2"
+        "version": "0.3.0"
       },
       "spec": {
         "capabilities": {
@@ -1218,6 +1394,17 @@
           "tools": {
             "read": {
               "enabled": true
+            }
+          }
+        },
+        "telemetry": {
+          "enabled": true,
+          "metrics": {
+            "exporter": {
+              "prometheus": {
+                "host": "",
+                "port": 9464
+              }
             }
           }
         },
@@ -1482,6 +1669,43 @@
             "source": "https://github.com/grafana/skills/tree/6311c4f4d36db3c5a85686ef2b3ce5fed4e53c0c/skills/grafana-core/dashboarding"
           }
         ],
+        "examples": [
+          {
+            "title": "Discover metrics for a service",
+            "description": "Ask \"What HTTP metrics are exposed in Prometheus matching http_.*?\" and the agent uses discover_metrics to list the matching series, optionally filtered by metric type (counter, gauge, histogram, summary)."
+          },
+          {
+            "title": "Build and validate a PromQL query",
+            "description": "Ask \"Give me the p99 request latency per endpoint\" and the agent drafts PromQL with generate_promql_queries, applies the promql skill's best practices, and confirms it parses against Prometheus with validate_promql_query before returning it."
+          },
+          {
+            "title": "Create a dashboard for a service",
+            "description": "Ask \"Create a RED-method dashboard for my checkout service\" and the agent uses the dashboarding skill and create_dashboard to assemble time series and stat panels wired to validated PromQL queries, with thresholds and template variables."
+          },
+          {
+            "title": "Deploy a dashboard to Grafana",
+            "description": "Provide a Grafana URL and API key, then ask \"Deploy this dashboard to my Grafana Cloud instance\" and the agent pushes the dashboard JSON with deploy_dashboard (guarded by GRAFANA_DEPLOY_ENABLED) to Grafana Cloud or a self-hosted instance."
+          }
+        ],
+        "documentation": {
+          "pages": [
+            {
+              "title": "Getting Started",
+              "path": "docs/getting-started.md",
+              "description": "Run the agent, connect it to an LLM, Prometheus, and Grafana, and send your first request."
+            },
+            {
+              "title": "Configuration",
+              "path": "docs/configuration.md",
+              "description": "Environment variables for the LLM client, Prometheus, and Grafana deployment."
+            },
+            {
+              "title": "Usage",
+              "path": "docs/usage.md",
+              "description": "The discover, query, build, and deploy workflow and the tools behind it."
+            }
+          ]
+        },
         "server": {
           "port": 8080,
           "debug": false,
@@ -1490,7 +1714,7 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/grafana-agent",
-            "version": "1.26.2",
+            "version": "1.26.4",
             "vendor": {
               "deps": [
                 "github.com/stretchr/testify@v1.11.1"
@@ -1515,7 +1739,9 @@
           "issue_templates": false,
           "dependabot": true,
           "ci": true,
-          "cd": true
+          "cd": true,
+          "app_id_secret": "RELEASER_APP_ID",
+          "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
         },
         "development": {
           "sandbox": {
@@ -1532,10 +1758,14 @@
           "ai": {
             "orchestrators": {
               "claudecode": {
-                "enabled": true
+                "enabled": true,
+                "appIdSecret": "CLAUDE_APP_ID",
+                "appPrivateKeySecret": "CLAUDE_APP_PRIVATE_KEY"
               },
               "infer": {
-                "enabled": true
+                "enabled": true,
+                "appIdSecret": "INFER_APP_ID",
+                "appPrivateKeySecret": "INFER_APP_PRIVATE_KEY"
               },
               "codex": {
                 "enabled": false
@@ -1554,7 +1784,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/grafana-agent",
         "ref": "main",
-        "fetchedAt": "2026-06-06T05:17:20.916Z"
+        "fetchedAt": "2026-07-17T21:48:58.712Z"
       }
     },
     {
@@ -1563,7 +1793,7 @@
       "metadata": {
         "name": "mock-agent",
         "description": "A2A agent server for mocking and testing. Uses a mock LLM client - no API keys required!",
-        "version": "0.1.11"
+        "version": "0.3.3"
       },
       "spec": {
         "capabilities": {
@@ -1574,10 +1804,29 @@
         "artifacts": {
           "enabled": true
         },
+        "telemetry": {
+          "enabled": true,
+          "traces": {
+            "exporter": {
+              "otlp": {
+                "endpoint": "http://localhost:4318",
+                "protocol": "http/protobuf"
+              }
+            }
+          },
+          "metrics": {
+            "exporter": {
+              "prometheus": {
+                "host": "",
+                "port": 9090
+              }
+            }
+          }
+        },
         "agent": {
           "provider": "",
           "model": "",
-          "systemPrompt": "You are a mock AI assistant designed for testing and development purposes.\n\nYou have access to several mock tools that demonstrate different testing scenarios:\n- echo: Simply echo back the input message (useful for basic connectivity tests)\n- delay: Simulate slow responses with configurable delays\n- error: Simulate error conditions for testing error handling\n- random_data: Generate random test data\n- validate: Validate input against common patterns\n\nWhen responding:\n- Be clear and predictable in your responses\n- Include relevant metadata about the request\n- Support both streaming and non-streaming modes\n- Handle edge cases gracefully\n\nYour purpose is to provide consistent, reproducible responses for testing A2A protocol implementations.\n"
+          "systemPrompt": "You are a mock AI assistant designed for testing and development purposes.\n\nYou have access to several mock tools that demonstrate different testing scenarios:\n- echo: Simply echo back the input message (useful for basic connectivity tests)\n- delay: Simulate slow responses with configurable delays\n- error: Simulate error conditions for testing error handling\n- random_data: Generate random test data\n- validate: Validate input against common patterns\n- Read: Read a file from disk - the mock routes here when a request mentions\n  \"read <path>\", exercising a real tool call (and its telemetry span) so\n  distributed traces show a nested sub-tool span under a2a.request\n- simulate_tool_call: Simulate one tool call with a configurable name, latency\n  and optional error status. The mock drives it repeatedly to build multi\n  tool-call workloads for load, latency and failure testing.\n\nThe mock routes on deterministic keywords, not model reasoning. Notably,\n\"read <path>\" runs the Read tool against <path> (defaulting to README.md),\nwhich is handy for end-to-end distributed-tracing demos. Saying\n\"simulate N tool calls\" (or setting MOCK_TOOL_CALLS=read,search,read) drives a\nsequence of instrumented simulate_tool_call spans - each with its own\ngen_ai.tool.name, duration and optional injected failure - so a task can look\nlike a realistic multi-step agent in a trace.\n\nWhen responding:\n- Be clear and predictable in your responses\n- Include relevant metadata about the request\n- Support both streaming and non-streaming modes\n- Handle edge cases gracefully\n\nYour purpose is to provide consistent, reproducible responses for testing A2A protocol implementations.\n"
         },
         "config": {
           "tools": {
@@ -1734,6 +1983,34 @@
                 "validation_type"
               ]
             }
+          },
+          {
+            "id": "simulate_tool_call",
+            "name": "simulate_tool_call",
+            "description": "Simulate a single tool call for load, latency and failure testing. Emits an instrumented span (gen_ai.tool.name) with a configurable duration and optional error status. The mock LLM drives this once per entry of a multi-tool-call workload.",
+            "tags": [
+              "mock",
+              "testing",
+              "performance",
+              "tracing"
+            ],
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Tool name reported as gen_ai.tool.name and the span suffix (tool.<name>), e.g. read or search."
+                },
+                "duration_ms": {
+                  "type": "number",
+                  "description": "Simulated latency in milliseconds (default 100, capped at 60000)."
+                },
+                "fail": {
+                  "type": "boolean",
+                  "description": "When true, mark the emitted span with error status. This is non-fatal: the surrounding workload continues so the full trace is produced."
+                }
+              }
+            }
           }
         ],
         "skills": [
@@ -1779,12 +2056,19 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/mock-agent",
-            "version": "1.26.2",
+            "version": "1.26.4",
             "vendor": {
-              "deps": [],
+              "deps": [
+                "github.com/inference-gateway/sdk@v1.21.0"
+              ],
               "devdeps": []
             }
           }
+        },
+        "hooks": {
+          "post": [
+            "go mod tidy"
+          ]
         },
         "scm": {
           "provider": "github",
@@ -1793,7 +2077,9 @@
           "issue_templates": false,
           "dependabot": true,
           "ci": true,
-          "cd": true
+          "cd": true,
+          "app_id_secret": "RELEASER_APP_ID",
+          "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
         },
         "development": {
           "sandbox": {
@@ -1810,7 +2096,9 @@
           "ai": {
             "orchestrators": {
               "claudecode": {
-                "enabled": true
+                "enabled": true,
+                "appIdSecret": "CLAUDE_APP_ID",
+                "appPrivateKeySecret": "CLAUDE_APP_PRIVATE_KEY"
               },
               "codex": {
                 "enabled": false
@@ -1822,17 +2110,61 @@
                 "enabled": false
               },
               "infer": {
-                "enabled": true
+                "enabled": true,
+                "appIdSecret": "INFER_APP_ID",
+                "appPrivateKeySecret": "INFER_APP_PRIVATE_KEY"
               }
             }
           },
           "deps": []
+        },
+        "examples": [
+          {
+            "title": "Connectivity smoke test",
+            "description": "Send a known payload through the echo tool (the connectivity-check skill) and confirm the round-trip, verifying the agent is reachable and responding over A2A."
+          },
+          {
+            "title": "Error-handling drill",
+            "description": "Drive the error tool across every error_type - validation, timeout, internal, not_found - via the error-injection skill to see how your client reacts to each failure mode."
+          },
+          {
+            "title": "Latency and load simulation",
+            "description": "Combine the delay tool with random_data (the load-simulation skill) to return realistic test payloads after a configurable delay, exercising client timeouts and streaming under slow responses."
+          },
+          {
+            "title": "Distributed-tracing demo with nested tool spans",
+            "description": "Send \"read <path>\" to route through the Read built-in and emit a tool.read span nested under a2a.request, producing real per-tool sub-spans for end-to-end OpenTelemetry tracing (see examples/opentelemetry)."
+          }
+        ],
+        "documentation": {
+          "pages": [
+            {
+              "title": "Getting Started",
+              "path": "docs/getting-started.md",
+              "description": "Install, build, and run the mock agent locally or with Docker."
+            },
+            {
+              "title": "Configuration",
+              "path": "docs/configuration.md",
+              "description": "Environment variables and agent.yaml settings that control the mock agent."
+            },
+            {
+              "title": "Usage",
+              "path": "docs/usage.md",
+              "description": "Drive the mock tools and skills over A2A, including the deterministic keyword routing."
+            },
+            {
+              "title": "Simulating Tool Calls",
+              "path": "docs/simulating-tool-calls.md",
+              "description": "Drive configurable multi-tool-call workloads - counts, per-call latency, and failure injection - via prompt keywords or the MOCK_TOOL_CALLS env."
+            }
+          ]
         }
       },
       "_source": {
         "url": "https://github.com/inference-gateway/mock-agent",
         "ref": "main",
-        "fetchedAt": "2026-06-06T05:17:20.916Z"
+        "fetchedAt": "2026-07-17T21:48:58.712Z"
       }
     },
     {
@@ -1841,7 +2173,7 @@
       "metadata": {
         "name": "n8n-agent",
         "description": "A2A agent server specialized in generating and automating n8n workflows",
-        "version": "0.2.7"
+        "version": "0.3.0"
       },
       "spec": {
         "capabilities": {
@@ -1859,7 +2191,7 @@
         "agent": {
           "provider": "",
           "model": "",
-          "systemPrompt": "You are an expert N8N workflow automation assistant. Your role is to help users build powerful automation workflows using N8N.\n\nYour primary capabilities:\n1. **Documentation Search**: Use the search_n8n_docs tool to search through comprehensive N8N node documentation to find the right nodes for any task\n2. **Workflow Generation**: Create complete, working N8N workflow YAML files based on user requirements using your knowledge and the create_artifact tool\n3. **Workflow Validation**: Use the validate_n8n_workflow tool to ensure all workflows are valid before creating artifacts\n\nKey knowledge areas:\n- 520+ N8N nodes including standard nodes and LangChain AI nodes\n- Best practices for workflow design and node configuration\n- Integration patterns for popular services (Slack, Gmail, databases, APIs, etc.)\n- Trigger types and when to use them (webhooks, schedules, manual triggers)\n- Data transformation and flow control\n- Error handling and workflow optimization\n\nWhen helping users:\n- Always search documentation first to ensure accurate node usage\n- Provide complete, working YAML configurations\n- Include proper parameter configurations with examples\n- Suggest best practices for workflow organization\n- Consider error handling and edge cases\n- Explain the workflow logic clearly\n\nYour responses should be practical, accurate, and ready-to-use. Your automation solutions should be maintainable, efficient, and production-ready.\n\nWhen a user requests a new workflow or asks to automate a process, follow the\nn8n-workflow-generation skill - load skills/n8n-workflow-generation/SKILL.md\nvia the read tool and execute its steps exactly.\n"
+          "systemPrompt": "You are an expert N8N workflow automation assistant. Your role is to help users build powerful automation workflows using N8N.\n\nYour primary capabilities:\n1. **Documentation Search**: Use the search_n8n_docs tool to search through comprehensive N8N node documentation to find the right nodes for any task\n2. **Workflow Generation**: Create complete, working N8N workflow YAML files based on user requirements using your knowledge and the create_artifact tool\n3. **Workflow Validation**: Use the validate_n8n_workflow tool to ensure all workflows are valid before creating artifacts\n\nKey knowledge areas:\n- 520+ N8N nodes including standard nodes and LangChain AI nodes\n- Best practices for workflow design and node configuration\n- Integration patterns for popular services (Slack, Gmail, databases, APIs, etc.)\n- Trigger types and when to use them (webhooks, schedules, manual triggers)\n- Data transformation and flow control\n- Error handling and workflow optimization\n\nWhen helping users:\n- Always search documentation first to ensure accurate node usage\n- Provide complete, working YAML configurations\n- Include proper parameter configurations with examples\n- Suggest best practices for workflow organization\n- Consider error handling and edge cases\n- Explain the workflow logic clearly\n\nYour responses should be practical, accurate, and ready-to-use. Your automation solutions should be maintainable, efficient, and production-ready.\n\nWhen a user requests a new workflow or asks to automate a process, follow the\nn8n-workflow-generation skill - load skills/n8n-workflow-generation/SKILL.md\nvia the read tool and execute its steps exactly.\n\nBefore saving any workflow with create_artifact you MUST validate it by\nfollowing the n8n-workflow-validation skill - load\nskills/n8n-workflow-validation/SKILL.md via the read tool. Call\nvalidate_n8n_workflow, fix every reported error, and re-validate until the\nresult is VALID. Never create an artifact from an unvalidated or invalid\nworkflow, and only consider the task complete once validation passes.\n"
         },
         "tools": [
           {
@@ -1947,8 +2279,58 @@
               "workflow",
               "automation"
             ]
+          },
+          {
+            "id": "n8n-workflow-validation",
+            "bare": true,
+            "name": "n8n-workflow-validation",
+            "description": "Use this to validate an n8n workflow before saving it as an artifact, or whenever a user asks to check, lint, or validate an existing workflow. Runs validate_n8n_workflow, fixes every reported error, and re-validates until the workflow is VALID. Validation is mandatory before create_artifact.",
+            "tags": [
+              "n8n",
+              "workflow",
+              "validation",
+              "yaml",
+              "json"
+            ]
           }
         ],
+        "examples": [
+          {
+            "title": "Generate a workflow from a plain-English request",
+            "description": "Ask for \"a workflow that posts new Airtable records to a Slack channel\" and the agent searches the relevant n8n nodes with search_n8n_docs, drafts the workflow YAML, validates it with validate_n8n_workflow, and returns it as a downloadable artifact ready to import into n8n."
+          },
+          {
+            "title": "Look up n8n node documentation",
+            "description": "Ask \"which parameters does the HTTP Request node take?\" and the agent uses search_n8n_docs to query its 520+ node documentation set (standard and LangChain AI nodes), answering with accurate node types, categories, and parameters."
+          },
+          {
+            "title": "Validate an existing workflow",
+            "description": "Paste an n8n workflow in YAML or JSON and the agent runs validate_n8n_workflow to check it against the schema, confirm required attributes, and report errors and warnings before you import it."
+          },
+          {
+            "title": "Scaffold a scheduled automation",
+            "description": "Describe a trigger plus actions - for example \"every morning fetch new RSS items and email a digest\" - and the agent selects an appropriate trigger node, wires the actions and connections, and produces a ready-to-run workflow with follow-up configuration notes."
+          }
+        ],
+        "documentation": {
+          "pages": [
+            {
+              "title": "Setup",
+              "path": "docs/setup.md",
+              "description": "Install, build, and run the n8n-agent locally or with Docker."
+            },
+            {
+              "title": "Configuration",
+              "path": "docs/configuration.md",
+              "description": "Environment variables for the LLM provider, artifacts, and tools."
+            },
+            {
+              "title": "Usage",
+              "path": "docs/usage.md",
+              "description": "Submit tasks, generate and validate n8n workflows, and collect artifacts."
+            }
+          ]
+        },
         "server": {
           "port": 8080,
           "debug": false,
@@ -1957,7 +2339,7 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/n8n-agent",
-            "version": "1.26.2",
+            "version": "1.26.4",
             "vendor": {
               "deps": [],
               "devdeps": []
@@ -1974,7 +2356,20 @@
           "issue_templates": false,
           "dependabot": true,
           "ci": true,
-          "cd": true
+          "cd": true,
+          "app_id_secret": "RELEASER_APP_ID",
+          "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
+        },
+        "telemetry": {
+          "enabled": true,
+          "metrics": {
+            "exporter": {
+              "prometheus": {
+                "host": "",
+                "port": 9464
+              }
+            }
+          }
         },
         "artifacts": {
           "enabled": true
@@ -1994,10 +2389,14 @@
           "ai": {
             "orchestrators": {
               "claudecode": {
-                "enabled": true
+                "enabled": true,
+                "appIdSecret": "CLAUDE_APP_ID",
+                "appPrivateKeySecret": "CLAUDE_APP_PRIVATE_KEY"
               },
               "infer": {
-                "enabled": true
+                "enabled": true,
+                "appIdSecret": "INFER_APP_ID",
+                "appPrivateKeySecret": "INFER_APP_PRIVATE_KEY"
               },
               "codex": {
                 "enabled": false
@@ -2018,7 +2417,7 @@
       "_source": {
         "url": "https://github.com/inference-gateway/n8n-agent",
         "ref": "main",
-        "fetchedAt": "2026-06-06T05:17:20.916Z"
+        "fetchedAt": "2026-07-17T21:48:58.712Z"
       }
     }
   ]

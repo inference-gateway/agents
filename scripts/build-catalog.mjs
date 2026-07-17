@@ -6,7 +6,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import yaml from 'js-yaml';
+import { load } from 'js-yaml';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 
@@ -42,7 +42,7 @@ async function fetchWithRetry(url, label) {
 
 async function loadSourceList() {
   const raw = readFileSync(SOURCES_FILE, 'utf8');
-  const parsed = yaml.load(raw);
+  const parsed = load(raw);
   if (!parsed || !Array.isArray(parsed.agents)) {
     throw new Error(`${SOURCES_FILE}: must contain top-level 'agents' array`);
   }
@@ -73,7 +73,7 @@ async function fetchAgent({ owner, repo, ref, url }) {
   const text = await res.text();
   let doc;
   try {
-    doc = yaml.load(text);
+    doc = load(text);
   } catch (err) {
     throw new Error(`${url}@${ref}: YAML parse error: ${err.message}`);
   }
