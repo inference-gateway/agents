@@ -5,7 +5,7 @@
 // Run with: npm run build
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { load } from 'js-yaml';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
@@ -18,6 +18,11 @@ const ADL_SCHEMA_URL =
   process.env.ADL_SCHEMA_URL ??
   'https://cdn.jsdelivr.net/gh/inference-gateway/adl@main/schema/v1/schema.json';
 
+const GH_API = 'https://api.github.com';
+// Optional. Raises the API rate limit from 60/hr to 5000/hr; public repos read
+// fine without it, so token-less local `npm run build` still works.
+const GH_TOKEN = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN ?? '';
+
 const GITHUB_URL_RE = /^https:\/\/github\.com\/([^/]+)\/([^/]+?)\/?$/i;
 const RETRY_LIMIT = 3;
 const RETRY_BACKOFF_MS = 750;
@@ -26,10 +31,12 @@ function sleep(ms) {
   return new Promise((res) => setTimeout(res, ms));
 }
 
-async function fetchWithRetry(url, label) {
+async function fetchWithRetry(url, label, { headers, allow404 = false } = {}) {
   for (let attempt = 1; attempt <= RETRY_LIMIT; attempt++) {
-    const res = await fetch(url, { headers: { accept: 'application/json, text/plain, */*' } });
-    if (res.ok) return res;
+    const res = await fetch(url, {
+      headers: headers ?? { accept: 'application/json, text/plain, */*' },
+    });
+    if (res.ok || (allow404 && res.status === 404)) return res;
     const transient = res.status >= 500 || res.status === 429;
     if (!transient || attempt === RETRY_LIMIT) {
       throw new Error(`${label}: HTTP ${res.status} ${res.statusText} (${url})`);
@@ -54,7 +61,7 @@ async function loadSourceList() {
     if (!m) {
       throw new Error(`${SOURCES_FILE}: entry ${i} has invalid GitHub URL '${entry.url}'`);
     }
-    const ref = typeof entry.ref === 'string' && entry.ref.length > 0 ? entry.ref : 'main';
+    const ref = typeof entry.ref === 'string' && entry.ref.length > 0 ? entry.ref : 'latest';
     return { url: entry.url.replace(/\/+$/, ''), ref, owner: m[1], repo: m[2] };
   });
 }
@@ -83,6 +90,69 @@ async function fetchAgent({ owner, repo, ref, url }) {
   return doc;
 }
 
+function ghHeaders() {
+  const headers = {
+    accept: 'application/vnd.github+json',
+    'x-github-api-version': '2022-11-28',
+    'user-agent': 'inference-gateway-agents-catalog',
+  };
+  if (GH_TOKEN) headers.authorization = `Bearer ${GH_TOKEN}`;
+  return headers;
+}
+
+// Parse a leading semver (major.minor.patch) out of a tag like `v1.2.3`.
+export function parseVersion(tag) {
+  const m = /^v?(\d+)\.(\d+)\.(\d+)/.exec(tag);
+  return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null;
+}
+
+// Descending sort: highest version first. A bare release tag outranks its
+// prereleases (v1.2.3 before v1.2.3-rc.1); unparseable tags sort last.
+export function compareTagsDesc(a, b) {
+  const va = parseVersion(a);
+  const vb = parseVersion(b);
+  if (va && vb) {
+    for (let i = 0; i < 3; i++) {
+      if (va[i] !== vb[i]) return vb[i] - va[i];
+    }
+    return a.length - b.length || a.localeCompare(b);
+  }
+  if (va) return -1;
+  if (vb) return 1;
+  return a.localeCompare(b);
+}
+
+// Resolve the `latest` sentinel to a concrete ref: the newest GitHub *release*
+// tag, or - only when the repo has cut no releases at all - the newest git tag.
+// This is what keeps a dangling tag (tag pushed, but the release/CD step failed)
+// out of the catalog: releases/latest ignores any tag that has no release.
+export async function resolveLatestRef({ owner, repo, url }) {
+  const relRes = await fetchWithRetry(
+    `${GH_API}/repos/${owner}/${repo}/releases/latest`,
+    `latest release for ${url}`,
+    { headers: ghHeaders(), allow404: true },
+  );
+  if (relRes.ok) {
+    const rel = await relRes.json();
+    if (rel?.tag_name) return rel.tag_name;
+  }
+  // No release yet - fall back to the newest tag by semver.
+  // ponytail: page 1 (100 tags) only; a repo with >100 tags and zero releases
+  // could miss the newest - add pagination if that ever actually happens.
+  const tagsRes = await fetchWithRetry(
+    `${GH_API}/repos/${owner}/${repo}/tags?per_page=100`,
+    `tags for ${url}`,
+    { headers: ghHeaders() },
+  );
+  const tags = await tagsRes.json();
+  const names = (Array.isArray(tags) ? tags : []).map((t) => t?.name).filter(Boolean);
+  if (names.length === 0) {
+    throw new Error(`${url}: 'latest' requested but the repo has no releases or tags`);
+  }
+  names.sort(compareTagsDesc);
+  return names[0];
+}
+
 async function main() {
   const sources = await loadSourceList();
   if (sources.length === 0) {
@@ -99,25 +169,26 @@ async function main() {
 
   for (const source of sources) {
     try {
-      const doc = await fetchAgent(source);
+      const ref = source.ref === 'latest' ? await resolveLatestRef(source) : source.ref;
+      const doc = await fetchAgent({ ...source, ref });
       const ok = validate(doc);
       if (!ok) {
         const details = (validate.errors ?? [])
           .map((e) => `  ${e.instancePath || '/'} ${e.message}`)
           .join('\n');
-        throw new Error(`${source.url}@${source.ref}: ADL validation failed:\n${details}`);
+        throw new Error(`${source.url}@${ref}: ADL validation failed:\n${details}`);
       }
       const name = doc.metadata?.name;
-      if (!name) throw new Error(`${source.url}@${source.ref}: missing metadata.name`);
+      if (!name) throw new Error(`${source.url}@${ref}: missing metadata.name`);
       if (seenNames.has(name)) {
         throw new Error(
-          `${source.url}@${source.ref}: duplicate metadata.name '${name}' (also claimed by ${seenNames.get(name)})`,
+          `${source.url}@${ref}: duplicate metadata.name '${name}' (also claimed by ${seenNames.get(name)})`,
         );
       }
-      seenNames.set(name, `${source.url}@${source.ref}`);
-      doc._source = { url: source.url, ref: source.ref, fetchedAt };
+      seenNames.set(name, `${source.url}@${ref}`);
+      doc._source = { url: source.url, ref, fetchedAt };
       agents.push(doc);
-      console.log(`  ✓ ${name}  ←  ${source.url}@${source.ref}`);
+      console.log(`  ✓ ${name}  ←  ${source.url}@${ref}`);
     } catch (err) {
       errors.push(err.message);
       console.error(`  ✗ ${source.url}@${source.ref}`);
@@ -148,4 +219,7 @@ async function main() {
   console.log(`Wrote ${agents.length} agents to ${OUTPUT_FILE}`);
 }
 
-await main();
+// Only build when run directly; importing (e.g. from tests) must not hit the network.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await main();
+}

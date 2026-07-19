@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "node scripts/build-catalog.mjs",
+    "test": "node --test",
     "format": "prettier '**/*.md' --write",
     "format:check": "prettier '**/*.md' --check"
   },

@@ -6,22 +6,19 @@
 # ADL JSON Schema, and bundles all of them into catalog.json.
 #
 #   url  (required)  - full https://github.com/<owner>/<repo> URL
-#   ref  (optional)  - branch, tag, or commit SHA (default: main).
-#                      Pinning a release tag is recommended for third-party
-#                      agents so upstream changes can't break the catalog.
+#   ref  (optional)  - branch, tag, or commit SHA to pin. Omit (or set `latest`)
+#                      to track the newest GitHub *release* automatically,
+#                      falling back to the newest tag only when the repo has no
+#                      releases. Pin an explicit tag/SHA for third-party agents
+#                      you don't control so upstream changes can't break the
+#                      catalog.
 #
 # Third-party agents are welcome. Open a PR adding one entry.
 
 agents:
   - url: https://github.com/inference-gateway/mock-agent
-    ref: main
   - url: https://github.com/inference-gateway/browser-agent
-    ref: main
   - url: https://github.com/inference-gateway/documentation-agent
-    ref: main
   - url: https://github.com/inference-gateway/google-calendar-agent
-    ref: main
   - url: https://github.com/inference-gateway/n8n-agent
-    ref: main
   - url: https://github.com/inference-gateway/grafana-agent
-    ref: main

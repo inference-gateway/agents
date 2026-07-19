@@ -38,14 +38,18 @@ ADL_SCHEMA_URL=https://.../schema.json npm run build
 The pipeline is `agents.yaml` → `scripts/build-catalog.mjs` → `catalog.json`.
 
 - **`agents.yaml`** — the only file humans edit. List of `{ url, ref }` entries pointing at
-  public GitHub repos that ship `agent.yaml` at their root. `ref` defaults to `main`; pin a
-  release tag for third-party agents so upstream changes can't break the catalog.
-- **`scripts/build-catalog.mjs`** — for each entry: fetches `agent.yaml` from
+  public GitHub repos that ship `agent.yaml` at their root. `ref` defaults to `latest`, which
+  resolves to the newest GitHub **release** tag (and only falls back to the newest git tag if
+  the repo has cut no releases at all, so a tag pushed without a release (e.g. a broken CD)
+  never enters the catalog). Set an explicit tag/SHA to pin a third-party agent.
+- **`scripts/build-catalog.mjs`** — for each entry: resolves the `ref` (the `latest` sentinel
+  via the GitHub releases/tags API; explicit refs are used verbatim), fetches `agent.yaml` from
   `raw.githubusercontent.com/<owner>/<repo>/<ref>/agent.yaml`, validates against the ADL JSON
   Schema via Ajv, rejects duplicate `metadata.name` collisions, sorts by name, and writes
   `catalog.json`. Any single failure aborts the whole write — the catalog is all-or-nothing.
-  Each agent doc gets a non-schema `_source: { url, ref, fetchedAt }` block appended before
-  serialization.
+  Each agent doc gets a non-schema `_source: { url, ref, fetchedAt }` block (`ref` is the
+  **resolved** ref) appended before serialization. Set `GITHUB_TOKEN` to lift the API rate
+  limit from 60/hr to 5000/hr; unset works for public repos.
 - **`catalog.json`** — generated, committed, marked `linguist-generated=true` in
   `.gitattributes`. Never hand-edit; regenerate via `npm run build`.
 

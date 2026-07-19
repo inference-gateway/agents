@@ -26,7 +26,8 @@ catalog.json                # generated, committed; consumed by the registry SPA
 
    ```yaml
    - url: https://github.com/some-org/cool-agent
-     ref: main # branch, tag, or SHA. Pin to a release tag if you can.
+     # ref omitted → tracks the newest GitHub release (falls back to the newest
+     # tag if the repo has none). Set `ref: v1.2.3` to pin an agent you don't control.
    ```
 
 3. On merge, CI rebuilds `catalog.json`. The live registry picks it up within the jsdelivr
@@ -54,7 +55,7 @@ Shape:
       "spec": { "...": "..." },
       "_source": {
         "url": "https://github.com/...",
-        "ref": "main",
+        "ref": "v1.2.3",
         "fetchedAt": "..."
       }
     }
@@ -75,7 +76,8 @@ npm run build      # writes catalog.json
 The build script:
 
 1. Reads `agents.yaml`.
-2. Fetches `agent.yaml` from `raw.githubusercontent.com/<owner>/<repo>/<ref>/agent.yaml` for each entry.
+2. Resolves each entry's `ref` (the `latest` default → newest GitHub release, else
+   newest tag) and fetches `agent.yaml` from `raw.githubusercontent.com/<owner>/<repo>/<ref>/agent.yaml`.
 3. Validates against the ADL JSON Schema (`adl/schema/v1/schema.json`) via Ajv.
 4. Rejects duplicate `metadata.name` collisions.
 5. Sorts by `metadata.name` and writes `catalog.json`.
