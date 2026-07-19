@@ -29,11 +29,11 @@ JavaScript uses ESM (`"type": "module"`), two-space indentation, single quotes, 
   ref: v1.2.3
 ```
 
-Pin third-party agents to a tag or SHA when practical.
+Omitting `ref` tracks the agent's newest GitHub release (falling back to the newest tag only if it has none). Pin third-party agents to a tag or SHA when practical.
 
 ## Testing Guidelines
 
-There is no separate unit test suite. Treat `npm run build`, `task lint`, and `npm run format:check` as the required validation set. After changing `agents.yaml` or the build script, run `npm run build` and review the generated `catalog.json` diff for expected source, version, and sorting changes.
+`npm test` runs the `node:test` unit checks for the build script (currently the ref/semver resolution logic). Treat `npm test`, `npm run build`, `task lint`, and `npm run format:check` as the required validation set. After changing `agents.yaml` or the build script, run `npm run build` and review the generated `catalog.json` diff for expected source, version, and sorting changes.
 
 ## Commit & Pull Request Guidelines
 
