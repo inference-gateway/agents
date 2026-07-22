@@ -43,18 +43,15 @@ test('carryTimestamps only bumps timestamps for entries that changed', () => {
   });
   const existing = { version: 1, updated: 't0', agents: [entry('a', 'v1', 't0'), entry('b', 'v1', 't0')] };
 
-  // Nothing changed: skip flag, old stamps kept.
   let agents = [entry('a', 'v1', 't1'), entry('b', 'v1', 't1')];
   assert.deepEqual(carryTimestamps(existing, agents, 't1'), { changed: false, updated: 't0' });
   assert.equal(agents[0]._source.fetchedAt, 't0');
 
-  // One entry changed: `updated` bumps, unchanged entry keeps its stamp.
   agents = [entry('a', 'v1', 't1'), entry('b', 'v2', 't1')];
   assert.deepEqual(carryTimestamps(existing, agents, 't1'), { changed: true, updated: 't1' });
   assert.equal(agents[0]._source.fetchedAt, 't0');
   assert.equal(agents[1]._source.fetchedAt, 't1');
 
-  // Added/removed entries count as changes; no previous catalog writes fresh.
   assert.equal(carryTimestamps(existing, [entry('a', 'v1', 't1')], 't1').changed, true);
   assert.equal(carryTimestamps(null, [entry('a', 'v1', 't1')], 't1').changed, true);
 });
