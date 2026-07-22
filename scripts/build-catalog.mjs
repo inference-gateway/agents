@@ -100,6 +100,31 @@ function ghHeaders() {
   return headers;
 }
 
+// Serialize a catalog with the `updated`/`fetchedAt` timestamps blanked, so two
+// catalogs can be compared on content alone.
+export function withoutTimestamps(catalog) {
+  return JSON.stringify(catalog, (key, value) =>
+    key === 'updated' || key === 'fetchedAt' ? undefined : value,
+  );
+}
+
+// Carry timestamps forward from the previous catalog: an entry whose content is
+// unchanged keeps its old `fetchedAt`, and the top-level `updated` only moves
+// when at least one entry changed (or was added/removed). Mutates `agents`.
+export function carryTimestamps(existing, agents, now) {
+  const prev = new Map((existing?.agents ?? []).map((a) => [a?.metadata?.name, a]));
+  let changed = !existing || prev.size !== agents.length;
+  for (const doc of agents) {
+    const old = prev.get(doc.metadata.name);
+    if (old && withoutTimestamps(old) === withoutTimestamps(doc)) {
+      doc._source.fetchedAt = old._source?.fetchedAt ?? now;
+    } else {
+      changed = true;
+    }
+  }
+  return { changed, updated: changed ? now : (existing.updated ?? now) };
+}
+
 // Parse a leading semver (major.minor.patch) out of a tag like `v1.2.3`.
 export function parseVersion(tag) {
   const m = /^v?(\d+)\.(\d+)\.(\d+)/.exec(tag);
@@ -202,9 +227,23 @@ async function main() {
 
   agents.sort((a, b) => a.metadata.name.localeCompare(b.metadata.name));
 
+  let existing = null;
+  try {
+    existing = JSON.parse(readFileSync(OUTPUT_FILE, 'utf8'));
+  } catch {
+    // missing or unparseable previous catalog - write fresh
+  }
+  // Unchanged entries keep their previous fetchedAt; `updated` only bumps when
+  // something real changed. A fully unchanged catalog is left untouched.
+  const { changed, updated } = carryTimestamps(existing, agents, fetchedAt);
+  if (!changed) {
+    console.log(`Catalog unchanged; leaving ${OUTPUT_FILE} untouched`);
+    return;
+  }
+
   const catalog = {
     version: 1,
-    updated: fetchedAt,
+    updated,
     agents,
   };
 
