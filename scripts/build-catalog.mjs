@@ -233,8 +233,6 @@ async function main() {
   } catch {
     // missing or unparseable previous catalog - write fresh
   }
-  // Unchanged entries keep their previous fetchedAt; `updated` only bumps when
-  // something real changed. A fully unchanged catalog is left untouched.
   const { changed, updated } = carryTimestamps(existing, agents, fetchedAt);
   if (!changed) {
     console.log(`Catalog unchanged; leaving ${OUTPUT_FILE} untouched`);
