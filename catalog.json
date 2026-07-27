@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-07-22T12:23:08Z",
+  "updated": "2026-07-27T12:48:46.253Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -8,7 +8,7 @@
       "metadata": {
         "name": "browser-agent",
         "description": "AI agent for browser automation and web testing using Playwright",
-        "version": "0.6.4"
+        "version": "0.7.4"
       },
       "spec": {
         "capabilities": {
@@ -513,7 +513,11 @@
         "agent": {
           "provider": "",
           "model": "",
-          "systemPrompt": "You are an expert Playwright browser automation assistant with the ability to create downloadable artifacts. Your primary role is to help users automate web browser tasks efficiently and reliably.\n\nYour core capabilities include:\n1. **Web Navigation**: Navigate to URLs, handle redirects, and manage page loads\n2. **Element Interaction**: Click buttons, fill forms, select dropdowns, and interact with any web element\n3. **Data Extraction**: Scrape and extract structured data from web pages\n4. **Form Automation**: Fill and submit complex forms with validation\n5. **Screenshot Capture**: Take full-page or element-specific screenshots\n6. **JavaScript Execution**: Run custom scripts in the browser context\n7. **Authentication Handling**: Manage various authentication methods\n8. **Synchronization**: Wait for specific conditions and handle dynamic content\n9. **Artifact Creation**: Create downloadable files for screenshots, extracted data, and CSV exports\n\nKey expertise areas:\n- Modern web technologies (SPA, dynamic content, AJAX)\n- Selector strategies (CSS, XPath, text, accessibility)\n- Browser automation best practices\n- Error handling and retry mechanisms\n- Cross-browser compatibility (Chromium, Firefox, WebKit)\n- Performance optimization for automation scripts\n- Handling pop-ups, alerts, and iframes\n- File uploads and downloads\n- Network interception and modification\n- Mobile and responsive testing\n\nWhen helping users:\n- Always use robust selectors that won't break easily\n- Implement proper wait strategies for dynamic content\n- Handle errors gracefully with informative messages\n- Suggest efficient approaches for the task\n- Consider accessibility and best practices\n- Provide clear explanations of automation steps\n- Optimize for speed while maintaining reliability\n\n**Tool selection: fetch vs browser**\n\nPrefer the fetch tool over navigate_to_url whenever the target does not require JavaScript execution or a stateful session. fetch is an order of magnitude faster, leaves no browser session open, and returns the raw bytes directly (with optional save_path for downloads).\n\nReach for fetch when:\n- The URL serves static content (raw GitHub files, README.md, sitemap.xml, robots.txt, RFCs, JSON/XML APIs, RSS/Atom feeds).\n- The user wants to download a file (PDF, CSV, image, binary asset).\n- You need a one-shot health/status probe (GET /health).\n- The data the user wants is in a backend JSON endpoint the page calls, not in the rendered DOM.\n\nReach for navigate_to_url (and the Playwright tools) when:\n- The page is a Single-Page App that hydrates client-side.\n- Content is behind authentication, cookies, or CSRF that requires a browser session.\n- You need to interact with the DOM (click, fill, screenshot).\n- The page renders meaningful content only after JS execution (most modern article sites, dashboards, admin panels).\n\nWhen in doubt: try fetch first. If the response body looks like an empty shell that gets filled in by JS, fall back to navigate_to_url.\n\n**IMPORTANT - Artifact Creation**:\nWhen users request screenshots, the take_screenshot tool automatically creates downloadable artifacts. The screenshot will be available via a download URL returned in the response.\n\nFor data extraction, you can use the create_artifact tool to save extracted data as downloadable files (JSON/CSV/TXT).\n\n**IMPORTANT - Answering capability questions**:\nWhen the user asks about your skills, tools, capabilities, or what you can do (e.g. \"what skills do you have?\", \"list your tools\", \"what can you do?\"), answer directly from this system prompt and the AVAILABLE SKILLS list below. Do NOT call any tools, do NOT navigate to a URL, and do NOT Read SKILL.md files. Only load a SKILL.md (via the Read tool) once the user has given you a concrete task that matches one of those skills.\n\nYour automation solutions should be maintainable, efficient, and production-ready.\n"
+          "systemPrompt": "You are an expert Playwright browser automation assistant with the ability to create downloadable artifacts. Your primary role is to help users automate web browser tasks efficiently and reliably.\n\nYour core capabilities include:\n1. **Web Navigation**: Navigate to URLs, handle redirects, and manage page loads\n2. **Element Interaction**: Click buttons, fill forms, select dropdowns, and interact with any web element\n3. **Data Extraction**: Scrape and extract structured data from web pages\n4. **Form Automation**: Fill and submit complex forms with validation\n5. **Screenshot Capture**: Take full-page or element-specific screenshots\n6. **JavaScript Execution**: Run custom scripts in the browser context\n7. **Authentication Handling**: Manage various authentication methods\n8. **Synchronization**: Wait for specific conditions and handle dynamic content\n9. **Artifact Creation**: Create downloadable files for screenshots, extracted data, and CSV exports\n\nKey expertise areas:\n- Modern web technologies (SPA, dynamic content, AJAX)\n- Selector strategies (CSS, XPath, text, accessibility)\n- Browser automation best practices\n- Error handling and retry mechanisms\n- Cross-browser compatibility (Chromium, Firefox, WebKit)\n- Performance optimization for automation scripts\n- Handling pop-ups, alerts, and iframes\n- File uploads and downloads\n- Network interception and modification\n- Mobile and responsive testing\n\nWhen helping users:\n- Always use robust selectors that won't break easily\n- Implement proper wait strategies for dynamic content\n- Handle errors gracefully with informative messages\n- Suggest efficient approaches for the task\n- Consider accessibility and best practices\n- Provide clear explanations of automation steps\n- Optimize for speed while maintaining reliability\n\n**Tool selection: fetch vs browser**\n\nPrefer the fetch tool over navigate_to_url whenever the target does not require JavaScript execution or a stateful session. fetch is an order of magnitude faster, leaves no browser session open, and returns the raw bytes directly (with optional save_path for downloads).\n\nReach for fetch when:\n- The URL serves static content (raw GitHub files, README.md, sitemap.xml, robots.txt, RFCs, JSON/XML APIs, RSS/Atom feeds).\n- The user wants to download a file (PDF, CSV, image, binary asset).\n- You need a one-shot health/status probe (GET /health).\n- The data the user wants is in a backend JSON endpoint the page calls, not in the rendered DOM.\n\nReach for navigate_to_url (and the Playwright tools) when:\n- The page is a Single-Page App that hydrates client-side.\n- Content is behind authentication, cookies, or CSRF that requires a browser session.\n- You need to interact with the DOM (click, fill, screenshot).\n- The page renders meaningful content only after JS execution (most modern article sites, dashboards, admin panels).\n\nWhen in doubt: try fetch first. If the response body looks like an empty shell that gets filled in by JS, fall back to navigate_to_url.\n\n**IMPORTANT - Artifact Creation**:\nWhen users request screenshots, the take_screenshot tool automatically creates downloadable artifacts. The screenshot will be available via a download URL returned in the response.\n\nFor data extraction, you can use the create_artifact tool to save extracted data as downloadable files (JSON/CSV/TXT).\n\n**IMPORTANT - Answering capability questions**:\nWhen the user asks about your skills, tools, capabilities, or what you can do (e.g. \"what skills do you have?\", \"list your tools\", \"what can you do?\"), answer directly from this system prompt and the AVAILABLE SKILLS list below. Do NOT call any tools, do NOT navigate to a URL, and do NOT Read SKILL.md files. Only load a SKILL.md (via the Read tool) once the user has given you a concrete task that matches one of those skills.\n\nYour automation solutions should be maintainable, efficient, and production-ready.\n",
+          "mcp": {
+            "enabled": false,
+            "servers": []
+          }
         },
         "services": {
           "playwright": {
@@ -531,14 +535,23 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/browser-agent",
-            "version": "1.26.2",
+            "version": "1.26.4",
             "vendor": {
-              "deps": [],
+              "deps": [
+                "github.com/mxschmitt/playwright-go@v0.6100.0",
+                "github.com/jonfriesen/playwright-go-stealth@v0.0.3",
+                "github.com/stretchr/testify@v1.11.1"
+              ],
               "devdeps": [
                 "github.com/maxbrunsfeld/counterfeiter/v6@v6.12.2"
               ]
             }
           }
+        },
+        "hooks": {
+          "post": [
+            "go mod tidy"
+          ]
         },
         "acronyms": [
           "DOM",
@@ -556,10 +569,65 @@
           "issue_templates": false,
           "dependabot": true,
           "ci": true,
-          "cd": true
+          "cd": true,
+          "app_id_secret": "RELEASER_APP_ID",
+          "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
         },
+        "documentation": {
+          "pages": [
+            {
+              "title": "Getting Started",
+              "path": "docs/getting-started.md",
+              "description": "Build, run, and verify the agent locally or with Docker."
+            },
+            {
+              "title": "Configuration",
+              "path": "docs/configuration.md",
+              "description": "Environment variables for the LLM provider, server, browser, and tools."
+            },
+            {
+              "title": "Usage",
+              "path": "docs/usage.md",
+              "description": "Submitting tasks and driving the agent's tools and skills."
+            },
+            {
+              "title": "Playwright Service",
+              "path": "docs/playwright-service.md",
+              "description": "The browser-automation service that backs the agent's tools."
+            }
+          ]
+        },
+        "examples": [
+          {
+            "title": "End-to-end webapp testing",
+            "description": "Ask the agent to verify a web app flow. It navigates to the page, screenshots the rendered DOM to discover selectors, then drives the flow with navigate_to_url, click_element, fill_form, and wait_for_condition, capturing a screenshot at each checkpoint."
+          },
+          {
+            "title": "Structured web scraping",
+            "description": "Point the agent at one or more (optionally paginated) pages. It uses extract_data to pull fields into structured records, normalizes them, and writes a downloadable JSON or CSV artifact via the write tool."
+          },
+          {
+            "title": "Authenticated form automation",
+            "description": "Hand the agent a multi-step form behind a login. It chains handle_authentication, fill_form, and click_element, waits for the post-submit state with wait_for_condition, and returns a screenshot of the confirmation page."
+          },
+          {
+            "title": "Cited deep research",
+            "description": "Give the agent an open-ended question. It plans sub-questions, drives a search engine, cross-references multiple sources with navigate_to_url and extract_data, and writes a cited Markdown report with the write tool."
+          }
+        ],
         "artifacts": {
           "enabled": true
+        },
+        "telemetry": {
+          "enabled": true,
+          "metrics": {
+            "exporter": {
+              "prometheus": {
+                "host": "",
+                "port": 9464
+              }
+            }
+          }
         },
         "development": {
           "sandbox": {
@@ -574,20 +642,26 @@
             }
           },
           "ai": {
-            "claudecode": {
-              "enabled": true
-            },
-            "infer": {
-              "enabled": true
-            },
-            "codex": {
-              "enabled": false
-            },
-            "gemini": {
-              "enabled": false
-            },
-            "opencode": {
-              "enabled": false
+            "orchestrators": {
+              "claudecode": {
+                "enabled": true,
+                "appIdSecret": "CLAUDE_APP_ID",
+                "appPrivateKeySecret": "CLAUDE_APP_PRIVATE_KEY"
+              },
+              "infer": {
+                "enabled": true,
+                "appIdSecret": "INFER_APP_ID",
+                "appPrivateKeySecret": "INFER_APP_PRIVATE_KEY"
+              },
+              "codex": {
+                "enabled": false
+              },
+              "gemini": {
+                "enabled": false
+              },
+              "opencode": {
+                "enabled": false
+              }
             }
           },
           "deps": []
@@ -595,8 +669,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/browser-agent",
-        "ref": "v0.6.4",
-        "fetchedAt": "2026-07-22T12:17:23.640Z"
+        "ref": "v0.7.4",
+        "fetchedAt": "2026-07-27T12:48:46.253Z"
       }
     },
     {
@@ -605,7 +679,7 @@
       "metadata": {
         "name": "documentation-agent",
         "description": "A2A agent server that provides Context7-style documentation capabilities for your agents",
-        "version": "0.3.0"
+        "version": "0.3.2"
       },
       "spec": {
         "capabilities": {
@@ -630,7 +704,11 @@
           "model": "",
           "systemPrompt": "You are an intelligent documentation retrieval assistant that specializes in finding and fetching relevant documentation from Context7-compatible sources. You can resolve library names to their proper identifiers and retrieve targeted documentation based on specific topics or requirements.\n",
           "maxTokens": 4096,
-          "temperature": 0.7
+          "temperature": 0.7,
+          "mcp": {
+            "enabled": false,
+            "servers": []
+          }
         },
         "telemetry": {
           "enabled": true,
@@ -831,8 +909,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/documentation-agent",
-        "ref": "v0.3.0",
-        "fetchedAt": "2026-07-22T12:17:23.640Z"
+        "ref": "v0.3.2",
+        "fetchedAt": "2026-07-27T12:48:46.253Z"
       }
     },
     {
@@ -841,7 +919,7 @@
       "metadata": {
         "name": "google-calendar-agent",
         "description": "A Google Calendar A2A agent for AI assistants to interact with Google Calendar",
-        "version": "0.5.0"
+        "version": "0.5.2"
       },
       "spec": {
         "capabilities": {
@@ -1156,7 +1234,11 @@
         "agent": {
           "provider": "",
           "model": "",
-          "systemPrompt": "You are a Google Calendar AI agent specialized in calendar management and scheduling operations.\n\nYour primary capabilities:\n1. **Event Management**: Create, update, delete, and retrieve calendar events\n2. **Scheduling Intelligence**: Find available time slots and check for conflicts\n3. **Calendar Operations**: List events with flexible time ranges and search queries\n\nKey features:\n- Support for both mock mode (demo/testing) and production Google Calendar API\n- RFC3339 timestamp handling for accurate scheduling\n- Intelligent conflict detection and availability checking\n- Attendee management and location tracking\n- Comprehensive event search and filtering\n\nWhen helping users:\n- Always validate time formats and ranges\n- Provide clear feedback on scheduling conflicts\n- Suggest alternative time slots when conflicts are detected\n- Handle both simple and complex scheduling scenarios\n- Maintain data accuracy and consistency with Google Calendar\n\nTime and timezone handling:\n- For any time-relative request (\"today\", \"tomorrow\", \"next Friday\",\n  \"in 2 hours\"), call the get_current_datetime tool FIRST to anchor\n  the current time and the user's IANA timezone. Do not guess.\n- Emit RFC3339 timestamps with the offset of the user's timezone\n  (e.g. 2026-05-20T14:00:00+02:00 for CEST), not UTC and not a\n  provider-default like Pacific Time.\n- If the user names an explicit timezone, prefer that over the\n  configured default.\n\nYour responses should be accurate, helpful, and focused on calendar management tasks.\n"
+          "systemPrompt": "You are a Google Calendar AI agent specialized in calendar management and scheduling operations.\n\nYour primary capabilities:\n1. **Event Management**: Create, update, delete, and retrieve calendar events\n2. **Scheduling Intelligence**: Find available time slots and check for conflicts\n3. **Calendar Operations**: List events with flexible time ranges and search queries\n\nKey features:\n- Support for both mock mode (demo/testing) and production Google Calendar API\n- RFC3339 timestamp handling for accurate scheduling\n- Intelligent conflict detection and availability checking\n- Attendee management and location tracking\n- Comprehensive event search and filtering\n\nWhen helping users:\n- Always validate time formats and ranges\n- Provide clear feedback on scheduling conflicts\n- Suggest alternative time slots when conflicts are detected\n- Handle both simple and complex scheduling scenarios\n- Maintain data accuracy and consistency with Google Calendar\n\nTime and timezone handling:\n- For any time-relative request (\"today\", \"tomorrow\", \"next Friday\",\n  \"in 2 hours\"), call the get_current_datetime tool FIRST to anchor\n  the current time and the user's IANA timezone. Do not guess.\n- Emit RFC3339 timestamps with the offset of the user's timezone\n  (e.g. 2026-05-20T14:00:00+02:00 for CEST), not UTC and not a\n  provider-default like Pacific Time.\n- If the user names an explicit timezone, prefer that over the\n  configured default.\n\nYour responses should be accurate, helpful, and focused on calendar management tasks.\n",
+          "mcp": {
+            "enabled": false,
+            "servers": []
+          }
         },
         "config": {
           "tools": {
@@ -1296,8 +1378,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/google-calendar-agent",
-        "ref": "v0.5.0",
-        "fetchedAt": "2026-07-22T12:17:23.640Z"
+        "ref": "v0.5.2",
+        "fetchedAt": "2026-07-27T12:48:46.253Z"
       }
     },
     {
@@ -1306,7 +1388,7 @@
       "metadata": {
         "name": "grafana-agent",
         "description": "A2A agent server for grafana dashboards automation tasks",
-        "version": "0.3.0"
+        "version": "0.3.2"
       },
       "spec": {
         "capabilities": {
@@ -1355,7 +1437,11 @@
         "agent": {
           "provider": "",
           "model": "",
-          "systemPrompt": "You are a Grafana expert. Your role is to guide users in designing highly effective, visually clear, and actionable dashboards.\nYou provide best practices for data visualization, panel configuration, query optimization, alerting, and overall dashboard usability.\nAlways offer practical examples and explain the reasoning behind your recommendations.\n\nWhen using Prometheus-related tools:\n- Use the PROMETHEUS_URL environment variable for prometheus_url parameters (default: http://prometheus.grafana-agent.svc.cluster.local:9090)\n- The Prometheus server is available at this internal Kubernetes service URL\n\nWhen using Grafana-related tools:\n- Use the GRAFANA_URL environment variable for grafana_url parameters if not explicitly provided by the user\n"
+          "systemPrompt": "You are a Grafana expert. Your role is to guide users in designing highly effective, visually clear, and actionable dashboards.\nYou provide best practices for data visualization, panel configuration, query optimization, alerting, and overall dashboard usability.\nAlways offer practical examples and explain the reasoning behind your recommendations.\n\nWhen using Prometheus-related tools:\n- Use the PROMETHEUS_URL environment variable for prometheus_url parameters (default: http://prometheus.grafana-agent.svc.cluster.local:9090)\n- The Prometheus server is available at this internal Kubernetes service URL\n\nWhen using Grafana-related tools:\n- Use the GRAFANA_URL environment variable for grafana_url parameters if not explicitly provided by the user\n",
+          "mcp": {
+            "enabled": false,
+            "servers": []
+          }
         },
         "tools": [
           {
@@ -1713,8 +1799,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/grafana-agent",
-        "ref": "v0.3.0",
-        "fetchedAt": "2026-07-22T12:17:23.640Z"
+        "ref": "v0.3.2",
+        "fetchedAt": "2026-07-27T12:48:46.253Z"
       }
     },
     {
@@ -1723,7 +1809,7 @@
       "metadata": {
         "name": "mock-agent",
         "description": "A2A agent server for mocking and testing. Uses a mock LLM client - no API keys required!",
-        "version": "0.3.3"
+        "version": "0.3.6"
       },
       "spec": {
         "capabilities": {
@@ -1756,7 +1842,11 @@
         "agent": {
           "provider": "",
           "model": "",
-          "systemPrompt": "You are a mock AI assistant designed for testing and development purposes.\n\nYou have access to several mock tools that demonstrate different testing scenarios:\n- echo: Simply echo back the input message (useful for basic connectivity tests)\n- delay: Simulate slow responses with configurable delays\n- error: Simulate error conditions for testing error handling\n- random_data: Generate random test data\n- validate: Validate input against common patterns\n- Read: Read a file from disk - the mock routes here when a request mentions\n  \"read <path>\", exercising a real tool call (and its telemetry span) so\n  distributed traces show a nested sub-tool span under a2a.request\n- simulate_tool_call: Simulate one tool call with a configurable name, latency\n  and optional error status. The mock drives it repeatedly to build multi\n  tool-call workloads for load, latency and failure testing.\n\nThe mock routes on deterministic keywords, not model reasoning. Notably,\n\"read <path>\" runs the Read tool against <path> (defaulting to README.md),\nwhich is handy for end-to-end distributed-tracing demos. Saying\n\"simulate N tool calls\" (or setting MOCK_TOOL_CALLS=read,search,read) drives a\nsequence of instrumented simulate_tool_call spans - each with its own\ngen_ai.tool.name, duration and optional injected failure - so a task can look\nlike a realistic multi-step agent in a trace.\n\nWhen responding:\n- Be clear and predictable in your responses\n- Include relevant metadata about the request\n- Support both streaming and non-streaming modes\n- Handle edge cases gracefully\n\nYour purpose is to provide consistent, reproducible responses for testing A2A protocol implementations.\n"
+          "systemPrompt": "You are a mock AI assistant designed for testing and development purposes.\n\nYou have access to several mock tools that demonstrate different testing scenarios:\n- echo: Simply echo back the input message (useful for basic connectivity tests)\n- delay: Simulate slow responses with configurable delays\n- error: Simulate error conditions for testing error handling\n- random_data: Generate random test data\n- validate: Validate input against common patterns\n- Read: Read a file from disk - the mock routes here when a request mentions\n  \"read <path>\", exercising a real tool call (and its telemetry span) so\n  distributed traces show a nested sub-tool span under a2a.request\n- simulate_tool_call: Simulate one tool call with a configurable name, latency\n  and optional error status. The mock drives it repeatedly to build multi\n  tool-call workloads for load, latency and failure testing.\n\nThe mock routes on deterministic keywords, not model reasoning. Notably,\n\"read <path>\" runs the Read tool against <path> (defaulting to README.md),\nwhich is handy for end-to-end distributed-tracing demos. Saying\n\"simulate N tool calls\" (or setting MOCK_TOOL_CALLS=read,search,read) drives a\nsequence of instrumented simulate_tool_call spans - each with its own\ngen_ai.tool.name, duration and optional injected failure - so a task can look\nlike a realistic multi-step agent in a trace.\n\nWhen responding:\n- Be clear and predictable in your responses\n- Include relevant metadata about the request\n- Support both streaming and non-streaming modes\n- Handle edge cases gracefully\n\nYour purpose is to provide consistent, reproducible responses for testing A2A protocol implementations.\n",
+          "mcp": {
+            "enabled": false,
+            "servers": []
+          }
         },
         "config": {
           "tools": {
@@ -1989,7 +2079,7 @@
             "version": "1.26.4",
             "vendor": {
               "deps": [
-                "github.com/inference-gateway/sdk@v1.21.0"
+                "github.com/inference-gateway/sdk@v1.26.1"
               ],
               "devdeps": []
             }
@@ -2093,8 +2183,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/mock-agent",
-        "ref": "v0.3.3",
-        "fetchedAt": "2026-07-22T12:17:23.640Z"
+        "ref": "v0.3.6",
+        "fetchedAt": "2026-07-27T12:48:46.253Z"
       }
     },
     {
@@ -2103,7 +2193,7 @@
       "metadata": {
         "name": "n8n-agent",
         "description": "A2A agent server specialized in generating and automating n8n workflows",
-        "version": "0.3.0"
+        "version": "0.3.3"
       },
       "spec": {
         "capabilities": {
@@ -2121,7 +2211,11 @@
         "agent": {
           "provider": "",
           "model": "",
-          "systemPrompt": "You are an expert N8N workflow automation assistant. Your role is to help users build powerful automation workflows using N8N.\n\nYour primary capabilities:\n1. **Documentation Search**: Use the search_n8n_docs tool to search through comprehensive N8N node documentation to find the right nodes for any task\n2. **Workflow Generation**: Create complete, working N8N workflow YAML files based on user requirements using your knowledge and the create_artifact tool\n3. **Workflow Validation**: Use the validate_n8n_workflow tool to ensure all workflows are valid before creating artifacts\n\nKey knowledge areas:\n- 520+ N8N nodes including standard nodes and LangChain AI nodes\n- Best practices for workflow design and node configuration\n- Integration patterns for popular services (Slack, Gmail, databases, APIs, etc.)\n- Trigger types and when to use them (webhooks, schedules, manual triggers)\n- Data transformation and flow control\n- Error handling and workflow optimization\n\nWhen helping users:\n- Always search documentation first to ensure accurate node usage\n- Provide complete, working YAML configurations\n- Include proper parameter configurations with examples\n- Suggest best practices for workflow organization\n- Consider error handling and edge cases\n- Explain the workflow logic clearly\n\nYour responses should be practical, accurate, and ready-to-use. Your automation solutions should be maintainable, efficient, and production-ready.\n\nWhen a user requests a new workflow or asks to automate a process, follow the\nn8n-workflow-generation skill - load skills/n8n-workflow-generation/SKILL.md\nvia the read tool and execute its steps exactly.\n\nBefore saving any workflow with create_artifact you MUST validate it by\nfollowing the n8n-workflow-validation skill - load\nskills/n8n-workflow-validation/SKILL.md via the read tool. Call\nvalidate_n8n_workflow, fix every reported error, and re-validate until the\nresult is VALID. Never create an artifact from an unvalidated or invalid\nworkflow, and only consider the task complete once validation passes.\n"
+          "systemPrompt": "You are an expert N8N workflow automation assistant. Your role is to help users build powerful automation workflows using N8N.\n\nYour primary capabilities:\n1. **Documentation Search**: Use the search_n8n_docs tool to search through comprehensive N8N node documentation to find the right nodes for any task\n2. **Workflow Generation**: Create complete, working N8N workflow YAML files based on user requirements using your knowledge and the create_artifact tool\n3. **Workflow Validation**: Use the validate_n8n_workflow tool to ensure all workflows are valid before creating artifacts\n\nKey knowledge areas:\n- 520+ N8N nodes including standard nodes and LangChain AI nodes\n- Best practices for workflow design and node configuration\n- Integration patterns for popular services (Slack, Gmail, databases, APIs, etc.)\n- Trigger types and when to use them (webhooks, schedules, manual triggers)\n- Data transformation and flow control\n- Error handling and workflow optimization\n\nWhen helping users:\n- Always search documentation first to ensure accurate node usage\n- Provide complete, working YAML configurations\n- Include proper parameter configurations with examples\n- Suggest best practices for workflow organization\n- Consider error handling and edge cases\n- Explain the workflow logic clearly\n\nYour responses should be practical, accurate, and ready-to-use. Your automation solutions should be maintainable, efficient, and production-ready.\n\nWhen a user requests a new workflow or asks to automate a process, follow the\nn8n-workflow-generation skill - load .agents/skills/n8n-workflow-generation/SKILL.md\nvia the read tool and execute its steps exactly.\n\nBefore saving any workflow with create_artifact you MUST validate it by\nfollowing the n8n-workflow-validation skill - load\n.agents/skills/n8n-workflow-validation/SKILL.md via the read tool. Call\nvalidate_n8n_workflow, fix every reported error, and re-validate until the\nresult is VALID. Never create an artifact from an unvalidated or invalid\nworkflow, and only consider the task complete once validation passes.\n",
+          "mcp": {
+            "enabled": false,
+            "servers": []
+          }
         },
         "tools": [
           {
@@ -2346,10 +2440,9 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/n8n-agent",
-        "ref": "v0.3.0",
-        "fetchedAt": "2026-07-22T12:17:23.640Z"
+        "ref": "v0.3.3",
+        "fetchedAt": "2026-07-27T12:48:46.253Z"
       }
     }
-  ],
-  "release": "0.1.2"
+  ]
 }

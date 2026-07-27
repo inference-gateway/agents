@@ -37,5 +37,5 @@ Omitting `ref` tracks the agent's newest GitHub release (falling back to the new
 
 ## Commit & Pull Request Guidelines
 
-Recent history uses Conventional Commits such as `feat: Add grafana and mock agent`, `refactor(ci): ...`, and `chore(catalog): Rebuild catalog.json [skip ci]`. Follow that pattern. PRs should describe the catalog change, link the upstream agent repo or issue, note whether `catalog.json` was regenerated, and include validation commands run locally.
+Recent history uses Conventional Commits such as `feat: Add grafana and mock agent`, `refactor(ci): ...`, and `chore(catalog): rebuild catalog.json [skip ci]`. Follow that pattern. PRs should describe the catalog change, link the upstream agent repo or issue, note whether `catalog.json` was regenerated, and include validation commands run locally.
 

@@ -50,7 +50,7 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.app-token.outputs.token }}
-          commit-message: 'chore(catalog): Rebuild catalog.json [skip ci]'
+          commit-message: 'chore(catalog): rebuild catalog.json [skip ci]'
           branch: catalog/update
           title: 'chore(catalog): rebuild catalog.json'
           body: |
