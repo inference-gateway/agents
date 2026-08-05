@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-07-27T12:48:46.253Z",
+  "updated": "2026-08-05T21:56:29.178Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -8,7 +8,7 @@
       "metadata": {
         "name": "browser-agent",
         "description": "AI agent for browser automation and web testing using Playwright",
-        "version": "0.7.4"
+        "version": "0.8.2"
       },
       "spec": {
         "capabilities": {
@@ -37,6 +37,7 @@
           "browser": {
             "headless": true,
             "engine": "chromium",
+            "cdp_url": "",
             "stealth_mode": false,
             "session_timeout": "2m",
             "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
@@ -463,7 +464,7 @@
             "id": "webapp-testing",
             "bare": true,
             "name": "webapp-testing",
-            "description": "Use this when the user asks to verify, validate, or test a webapp end-to-end. Performs reconnaissance-then-action: navigate, screenshot the rendered DOM, identify selectors, then exercise the flow using navigate_to_url, click_element, fill_form, wait_for_condition, and take_screenshot.",
+            "description": "Use this when the user asks to verify, validate, or test a webapp end-to-end. Performs reconnaissance-then-action: navigate, screenshot the rendered DOM, identify selectors, then exercise the flow using navigate_to_url, click_element, fill_form, wait_for_condition, and take_screenshot (only available for chromium/firefox/webkit engines; lightpanda has no graphical rendering).",
             "tags": [
               "testing",
               "qa",
@@ -488,7 +489,7 @@
             "id": "form-automation",
             "bare": true,
             "name": "form-automation",
-            "description": "Use this when the user asks to complete a multi-step form, optionally behind a login. Orchestrates handle_authentication, navigate_to_url, fill_form, click_element, wait_for_condition, and take_screenshot to capture the post-submit confirmation.",
+            "description": "Use this when the user asks to complete a multi-step form, optionally behind a login. Orchestrates handle_authentication, navigate_to_url, fill_form, click_element, wait_for_condition, and take_screenshot (only available for chromium/firefox/webkit engines; lightpanda has no graphical rendering) to capture the post-submit confirmation.",
             "tags": [
               "forms",
               "automation",
@@ -513,7 +514,7 @@
         "agent": {
           "provider": "",
           "model": "",
-          "systemPrompt": "You are an expert Playwright browser automation assistant with the ability to create downloadable artifacts. Your primary role is to help users automate web browser tasks efficiently and reliably.\n\nYour core capabilities include:\n1. **Web Navigation**: Navigate to URLs, handle redirects, and manage page loads\n2. **Element Interaction**: Click buttons, fill forms, select dropdowns, and interact with any web element\n3. **Data Extraction**: Scrape and extract structured data from web pages\n4. **Form Automation**: Fill and submit complex forms with validation\n5. **Screenshot Capture**: Take full-page or element-specific screenshots\n6. **JavaScript Execution**: Run custom scripts in the browser context\n7. **Authentication Handling**: Manage various authentication methods\n8. **Synchronization**: Wait for specific conditions and handle dynamic content\n9. **Artifact Creation**: Create downloadable files for screenshots, extracted data, and CSV exports\n\nKey expertise areas:\n- Modern web technologies (SPA, dynamic content, AJAX)\n- Selector strategies (CSS, XPath, text, accessibility)\n- Browser automation best practices\n- Error handling and retry mechanisms\n- Cross-browser compatibility (Chromium, Firefox, WebKit)\n- Performance optimization for automation scripts\n- Handling pop-ups, alerts, and iframes\n- File uploads and downloads\n- Network interception and modification\n- Mobile and responsive testing\n\nWhen helping users:\n- Always use robust selectors that won't break easily\n- Implement proper wait strategies for dynamic content\n- Handle errors gracefully with informative messages\n- Suggest efficient approaches for the task\n- Consider accessibility and best practices\n- Provide clear explanations of automation steps\n- Optimize for speed while maintaining reliability\n\n**Tool selection: fetch vs browser**\n\nPrefer the fetch tool over navigate_to_url whenever the target does not require JavaScript execution or a stateful session. fetch is an order of magnitude faster, leaves no browser session open, and returns the raw bytes directly (with optional save_path for downloads).\n\nReach for fetch when:\n- The URL serves static content (raw GitHub files, README.md, sitemap.xml, robots.txt, RFCs, JSON/XML APIs, RSS/Atom feeds).\n- The user wants to download a file (PDF, CSV, image, binary asset).\n- You need a one-shot health/status probe (GET /health).\n- The data the user wants is in a backend JSON endpoint the page calls, not in the rendered DOM.\n\nReach for navigate_to_url (and the Playwright tools) when:\n- The page is a Single-Page App that hydrates client-side.\n- Content is behind authentication, cookies, or CSRF that requires a browser session.\n- You need to interact with the DOM (click, fill, screenshot).\n- The page renders meaningful content only after JS execution (most modern article sites, dashboards, admin panels).\n\nWhen in doubt: try fetch first. If the response body looks like an empty shell that gets filled in by JS, fall back to navigate_to_url.\n\n**IMPORTANT - Artifact Creation**:\nWhen users request screenshots, the take_screenshot tool automatically creates downloadable artifacts. The screenshot will be available via a download URL returned in the response.\n\nFor data extraction, you can use the create_artifact tool to save extracted data as downloadable files (JSON/CSV/TXT).\n\n**IMPORTANT - Answering capability questions**:\nWhen the user asks about your skills, tools, capabilities, or what you can do (e.g. \"what skills do you have?\", \"list your tools\", \"what can you do?\"), answer directly from this system prompt and the AVAILABLE SKILLS list below. Do NOT call any tools, do NOT navigate to a URL, and do NOT Read SKILL.md files. Only load a SKILL.md (via the Read tool) once the user has given you a concrete task that matches one of those skills.\n\nYour automation solutions should be maintainable, efficient, and production-ready.\n",
+          "systemPrompt": "You are an expert Playwright browser automation assistant with the ability to create downloadable artifacts. Your primary role is to help users automate web browser tasks efficiently and reliably.\n\nYour core capabilities include:\n1. **Web Navigation**: Navigate to URLs, handle redirects, and manage page loads\n2. **Element Interaction**: Click buttons, fill forms, select dropdowns, and interact with any web element\n3. **Data Extraction**: Scrape and extract structured data from web pages\n4. **Form Automation**: Fill and submit complex forms with validation\n5. **Screenshot Capture**: Take full-page or element-specific screenshots\n6. **JavaScript Execution**: Run custom scripts in the browser context\n7. **Authentication Handling**: Manage various authentication methods\n8. **Synchronization**: Wait for specific conditions and handle dynamic content\n9. **Artifact Creation**: Create downloadable files for screenshots, extracted data, and CSV exports\n\nKey expertise areas:\n- Modern web technologies (SPA, dynamic content, AJAX)\n- Selector strategies (CSS, XPath, text, accessibility)\n- Browser automation best practices\n- Error handling and retry mechanisms\n- Cross-browser compatibility (Chromium, Firefox, WebKit)\n- Performance optimization for automation scripts\n- Handling pop-ups, alerts, and iframes\n- File uploads and downloads\n- Network interception and modification\n- Mobile and responsive testing\n\nWhen helping users:\n- Always use robust selectors that won't break easily\n- Implement proper wait strategies for dynamic content\n- Handle errors gracefully with informative messages\n- Suggest efficient approaches for the task\n- Consider accessibility and best practices\n- Provide clear explanations of automation steps\n- Optimize for speed while maintaining reliability\n\n**Tool selection: fetch vs browser**\n\nPrefer the fetch tool over navigate_to_url whenever the target does not require JavaScript execution or a stateful session. fetch is an order of magnitude faster, leaves no browser session open, and returns the raw bytes directly (with optional save_path for downloads).\n\nReach for fetch when:\n- The URL serves static content (raw GitHub files, README.md, sitemap.xml, robots.txt, RFCs, JSON/XML APIs, RSS/Atom feeds).\n- The user wants to download a file (PDF, CSV, image, binary asset).\n- You need a one-shot health/status probe (GET /health).\n- The data the user wants is in a backend JSON endpoint the page calls, not in the rendered DOM.\n\nReach for navigate_to_url (and the Playwright tools) when:\n- The page is a Single-Page App that hydrates client-side.\n- Content is behind authentication, cookies, or CSRF that requires a browser session.\n- You need to interact with the DOM (click, fill, screenshot).\n- The page renders meaningful content only after JS execution (most modern article sites, dashboards, admin panels).\n\nWhen in doubt: try fetch first. If the response body looks like an empty shell that gets filled in by JS, fall back to navigate_to_url.\n\n**IMPORTANT - Artifact Creation**:\nWhen users request screenshots, the take_screenshot tool automatically creates downloadable artifacts. The screenshot will be available via a download URL returned in the response.\n\nFor data extraction, you can use the create_artifact tool to save extracted data as downloadable files (JSON/CSV/TXT).\n\n**IMPORTANT - Answering capability questions**:\nWhen the user asks about your skills, tools, capabilities, or what you can do (e.g. \"what skills do you have?\", \"list your tools\", \"what can you do?\"), answer directly from this system prompt and the AVAILABLE SKILLS list below. Do NOT call any tools, do NOT navigate to a URL, and do NOT Read SKILL.md files. Only load a SKILL.md (via the Read tool) once the user has given you a concrete task that matches one of those skills.\n\n**Note**: When the browser engine is configured as lightpanda (no graphical rendering), the take_screenshot tool is not available. Use extract_data and execute_script for DOM inspection instead.\n\nYour automation solutions should be maintainable, efficient, and production-ready.\n",
           "mcp": {
             "enabled": false,
             "servers": []
@@ -554,6 +555,7 @@
           ]
         },
         "acronyms": [
+          "CDP",
           "DOM",
           "CSS",
           "XPath",
@@ -570,7 +572,7 @@
           "dependabot": true,
           "ci": true,
           "cd": true,
-          "app_id_secret": "RELEASER_APP_ID",
+          "app_id_secret": "RELEASER_APP_CLIENT_ID",
           "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
         },
         "documentation": {
@@ -669,8 +671,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/browser-agent",
-        "ref": "v0.7.4",
-        "fetchedAt": "2026-07-27T12:48:46.253Z"
+        "ref": "v0.8.2",
+        "fetchedAt": "2026-08-05T21:56:29.178Z"
       }
     },
     {
@@ -679,7 +681,7 @@
       "metadata": {
         "name": "documentation-agent",
         "description": "A2A agent server that provides Context7-style documentation capabilities for your agents",
-        "version": "0.3.2"
+        "version": "0.3.4"
       },
       "spec": {
         "capabilities": {
@@ -866,7 +868,7 @@
           "dependabot": true,
           "ci": true,
           "cd": true,
-          "app_id_secret": "RELEASER_APP_ID",
+          "app_id_secret": "RELEASER_APP_CLIENT_ID",
           "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
         },
         "development": {
@@ -909,8 +911,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/documentation-agent",
-        "ref": "v0.3.2",
-        "fetchedAt": "2026-07-27T12:48:46.253Z"
+        "ref": "v0.3.4",
+        "fetchedAt": "2026-08-05T21:56:29.178Z"
       }
     },
     {
@@ -919,7 +921,7 @@
       "metadata": {
         "name": "google-calendar-agent",
         "description": "A Google Calendar A2A agent for AI assistants to interact with Google Calendar",
-        "version": "0.5.2"
+        "version": "0.5.4"
       },
       "spec": {
         "capabilities": {
@@ -1298,7 +1300,7 @@
           "dependabot": true,
           "ci": true,
           "cd": true,
-          "app_id_secret": "RELEASER_APP_ID",
+          "app_id_secret": "RELEASER_APP_CLIENT_ID",
           "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
         },
         "development": {
@@ -1378,8 +1380,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/google-calendar-agent",
-        "ref": "v0.5.2",
-        "fetchedAt": "2026-07-27T12:48:46.253Z"
+        "ref": "v0.5.4",
+        "fetchedAt": "2026-08-05T21:56:29.178Z"
       }
     },
     {
@@ -1388,7 +1390,7 @@
       "metadata": {
         "name": "grafana-agent",
         "description": "A2A agent server for grafana dashboards automation tasks",
-        "version": "0.3.2"
+        "version": "0.3.4"
       },
       "spec": {
         "capabilities": {
@@ -1756,7 +1758,7 @@
           "dependabot": true,
           "ci": true,
           "cd": true,
-          "app_id_secret": "RELEASER_APP_ID",
+          "app_id_secret": "RELEASER_APP_CLIENT_ID",
           "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
         },
         "development": {
@@ -1799,8 +1801,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/grafana-agent",
-        "ref": "v0.3.2",
-        "fetchedAt": "2026-07-27T12:48:46.253Z"
+        "ref": "v0.3.4",
+        "fetchedAt": "2026-08-05T21:56:29.178Z"
       }
     },
     {
@@ -1809,7 +1811,7 @@
       "metadata": {
         "name": "mock-agent",
         "description": "A2A agent server for mocking and testing. Uses a mock LLM client - no API keys required!",
-        "version": "0.3.6"
+        "version": "0.4.1"
       },
       "spec": {
         "capabilities": {
@@ -2098,7 +2100,7 @@
           "dependabot": true,
           "ci": true,
           "cd": true,
-          "app_id_secret": "RELEASER_APP_ID",
+          "app_id_secret": "RELEASER_APP_CLIENT_ID",
           "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
         },
         "development": {
@@ -2183,8 +2185,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/mock-agent",
-        "ref": "v0.3.6",
-        "fetchedAt": "2026-07-27T12:48:46.253Z"
+        "ref": "v0.4.1",
+        "fetchedAt": "2026-08-05T21:56:29.178Z"
       }
     },
     {
@@ -2193,7 +2195,7 @@
       "metadata": {
         "name": "n8n-agent",
         "description": "A2A agent server specialized in generating and automating n8n workflows",
-        "version": "0.3.3"
+        "version": "0.3.5"
       },
       "spec": {
         "capabilities": {
@@ -2381,7 +2383,7 @@
           "dependabot": true,
           "ci": true,
           "cd": true,
-          "app_id_secret": "RELEASER_APP_ID",
+          "app_id_secret": "RELEASER_APP_CLIENT_ID",
           "app_private_key_secret": "RELEASER_APP_PRIVATE_KEY"
         },
         "telemetry": {
@@ -2440,8 +2442,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/n8n-agent",
-        "ref": "v0.3.3",
-        "fetchedAt": "2026-07-27T12:48:46.253Z"
+        "ref": "v0.3.5",
+        "fetchedAt": "2026-08-05T21:56:29.178Z"
       }
     }
   ]
