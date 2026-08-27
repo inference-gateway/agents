@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-08-21T12:57:32.947Z",
+  "updated": "2026-08-27T11:17:37.588Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -8,7 +8,7 @@
       "metadata": {
         "name": "browser-agent",
         "description": "AI agent for browser automation and web testing using Playwright",
-        "version": "0.8.3"
+        "version": "0.8.4"
       },
       "spec": {
         "capabilities": {
@@ -20,18 +20,30 @@
           "tools": {
             "read": {
               "enabled": true,
-              "max_lines": 2000
+              "max_lines": 2000,
+              "allowed_roots": [
+                "/tmp/playwright/artifacts",
+                ".agents/skills"
+              ]
             },
             "write": {
-              "enabled": true
+              "enabled": true,
+              "allowed_roots": [
+                "/tmp/playwright/artifacts"
+              ]
             },
             "edit": {
-              "enabled": true
+              "enabled": true,
+              "allowed_roots": [
+                "/tmp/playwright/artifacts"
+              ]
             },
             "fetch": {
               "enabled": true,
               "allow_downloads": true,
-              "download_dir": "/tmp/playwright/artifacts"
+              "download_dir": "/tmp/playwright/artifacts",
+              "max_bytes": 10485760,
+              "timeout_seconds": 30
             }
           },
           "browser": {
@@ -539,9 +551,9 @@
             "version": "1.26.4",
             "vendor": {
               "deps": [
-                "github.com/mxschmitt/playwright-go@v0.6100.0",
+                "github.com/mxschmitt/playwright-go@v0.6201.1",
                 "github.com/jonfriesen/playwright-go-stealth@v0.0.3",
-                "github.com/stretchr/testify@v1.11.1"
+                "github.com/stretchr/testify@v1.12.1"
               ],
               "devdeps": [
                 "github.com/maxbrunsfeld/counterfeiter/v6@v6.12.2"
@@ -551,7 +563,8 @@
         },
         "hooks": {
           "post": [
-            "go mod tidy"
+            "go mod tidy",
+            "go fmt ./..."
           ]
         },
         "acronyms": [
@@ -596,6 +609,11 @@
               "title": "Playwright Service",
               "path": "docs/playwright-service.md",
               "description": "The browser-automation service that backs the agent's tools."
+            },
+            {
+              "title": "Security",
+              "path": "docs/security.md",
+              "description": "Default auth posture, tool sandboxing, and hardening for exposure."
             }
           ]
         },
@@ -671,8 +689,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/browser-agent",
-        "ref": "v0.8.3",
-        "fetchedAt": "2026-08-21T12:57:32.947Z"
+        "ref": "v0.8.4",
+        "fetchedAt": "2026-08-27T11:17:37.588Z"
       }
     },
     {
