@@ -7,7 +7,7 @@ This repository is the source list and build pipeline for the Inference Gateway 
 - `agents.yaml` is the main contributor-edited file. Add, remove, or repin public GitHub repos here.
 - `scripts/build-catalog.mjs` fetches each upstream `agent.yaml`, validates it against the ADL schema, and writes the catalog.
 - `catalog.json` is generated and committed for registry consumers. Do not hand-edit it.
-- `.github/workflows/ci.yml` checks Markdown linting and formatting. `.github/workflows/build-catalog.yml` rebuilds `catalog.json` on relevant pushes and daily cron.
+- `.github/workflows/ci.yml` checks Markdown linting and formatting. `.github/workflows/build-catalog.yml` rebuilds `catalog.json` on pushes to `agents.yaml`/build script/package files (or manual dispatch) and opens an automated rebuild PR — no cron.
 - `README.md` and `CLAUDE.md` document catalog behavior and maintainer workflow.
 
 ## Build, Test, and Development Commands
