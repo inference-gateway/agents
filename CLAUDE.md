@@ -62,7 +62,7 @@ the live registry.
 ## CI
 
 - **`ci.yml`** (PRs + push to main): markdownlint + prettier `--check`. Both must pass.
-- **`build-catalog.yml`** (push to `agents.yaml`/script/workflow, daily cron `0 4 * * *` UTC,
-  manual dispatch): rebuilds and auto-commits `catalog.json` via
-  `stefanzweifel/git-auto-commit-action` with `[skip ci]`. The daily cron is what rolls
-  upstream `agent.yaml` version bumps into the catalog without a PR.
+- **`build-catalog.yml`** (push to `agents.yaml`/script/package files/workflow, manual
+  dispatch): rebuilds `catalog.json` and opens/updates the `catalog/update` PR via
+  `peter-evans/create-pull-request`. There is no cron - upstream `agent.yaml` version bumps
+  only reach the catalog on a push here or a manual dispatch.
