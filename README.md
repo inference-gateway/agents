@@ -5,9 +5,9 @@ Source list for the agents shown on
 
 This repo doesn't store agent definitions itself — each agent's
 [ADL](https://github.com/inference-gateway/adl) `agent.yaml` lives in its own GitHub repo and is
-the source of truth. This repo just lists which agents to include in the catalog. A scheduled
-build job pulls each `agent.yaml`, validates it against the ADL JSON Schema, and bundles
-everything into a single `catalog.json` served via jsdelivr.
+the source of truth. This repo just lists which agents to include in the catalog. A build job
+pulls each `agent.yaml`, validates it against the ADL JSON Schema, and bundles everything into a
+single `catalog.json` served via jsdelivr.
 
 ## Layout
 
@@ -30,8 +30,8 @@ catalog.json                # generated, committed; consumed by the registry SPA
      # tag if the repo has none). Set `ref: v1.2.3` to pin an agent you don't control.
    ```
 
-3. On merge, CI rebuilds `catalog.json`. The live registry picks it up within the jsdelivr
-   `@main` cache window (up to ~12h).
+3. On merge, CI rebuilds `catalog.json` and opens a follow-up PR with the result. Once that
+   merges, the live registry picks it up within the jsdelivr `@main` cache window (up to ~12h).
 
 Third-party agents are welcome — the `url` does not have to live under `inference-gateway`.
 
@@ -84,8 +84,9 @@ The build script:
 
 Override the ADL schema location with `ADL_SCHEMA_URL=...` if needed (for testing against a fork).
 
-## Schedule
+## When the catalog rebuilds
 
-The workflow runs on `push` to `agents.yaml` / scripts / workflow, plus a daily cron
-(`0 4 * * *` UTC) so upstream `agent.yaml` version bumps roll into the catalog without manual
-intervention.
+The workflow runs on `push` to `main` touching `agents.yaml` / the build script / package files,
+and on manual `workflow_dispatch`. There is no cron, so an upstream `agent.yaml` version bump
+does not roll into the catalog on its own - trigger the workflow manually (or push a change
+here) to pick it up.
