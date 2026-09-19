@@ -1,41 +1,65 @@
-# Repository Guidelines
+# AGENTS.md
 
-## Project Structure & Module Organization
+This repo is the source list and build pipeline for the Inference Gateway
+agents catalog — the data behind https://registry.inference-gateway.com. It
+contains **no agent implementations**. Each agent's ADL `agent.yaml` lives in
+its own GitHub repo and is the source of truth; requests like "add a tool to
+agent X" or "fix agent X's prompt" belong in that upstream repo. The only
+agent-facing change made here is editing `agents.yaml`.
 
-This repository is the source list and build pipeline for the Inference Gateway agents catalog. It does not contain agent implementations.
+## Pipeline
 
-- `agents.yaml` is the main contributor-edited file. Add, remove, or repin public GitHub repos here.
-- `scripts/build-catalog.mjs` fetches each upstream `agent.yaml`, validates it against the ADL schema, and writes the catalog.
-- `catalog.json` is generated and committed for registry consumers. Do not hand-edit it.
-- `.github/workflows/ci.yml` checks Markdown linting and formatting. `.github/workflows/build-catalog.yml` rebuilds `catalog.json` on pushes to `agents.yaml`/build script/package files (or manual dispatch) and opens an automated rebuild PR — no cron.
-- `README.md` and `CLAUDE.md` document catalog behavior and maintainer workflow.
+`agents.yaml` → `scripts/build-catalog.mjs` → `catalog.json`.
 
-## Build, Test, and Development Commands
+- `agents.yaml` — the only file humans edit. Entries are `{ url, ref }`
+  pointing at public GitHub repos that ship an `agent.yaml` at their root.
+- `scripts/build-catalog.mjs` — resolves each ref (via the GitHub releases
+  API), fetches `agent.yaml` from raw.githubusercontent.com, validates via Ajv
+  against the ADL JSON Schema, rejects duplicate `metadata.name`, sorts by
+  name, and writes `catalog.json`. Any failure aborts the write — the catalog
+  is all-or-nothing. Unit checks live in `scripts/build-catalog.test.mjs`.
+- `catalog.json` — generated and committed. Never hand-edit; regenerate with
+  `npm run build` and review the diff.
 
-- `npm install` or `npm ci`: install dependencies. Use Node `^24.15.0`.
-- `npm run build`: aggregate upstream agent manifests and rewrite `catalog.json`. This requires network access to GitHub and the ADL schema URL.
-- `ADL_SCHEMA_URL=https://... npm run build`: validate against a custom schema, useful for schema fork testing.
-- `npm run format`: run Prettier on Markdown files.
-- `npm run format:check`: verify Markdown formatting without writing changes.
-- `task lint`: run `markdownlint` for Markdown files.
-- `task lint:fix`: auto-fix Markdown lint issues where possible.
+## Commands
 
-## Coding Style & Naming Conventions
-
-JavaScript uses ESM (`"type": "module"`), two-space indentation, single quotes, and semicolons as shown in `scripts/build-catalog.mjs`. Keep script changes small and all-or-nothing: validation failures should abort catalog writes. In YAML, use two-space indentation and entries shaped like:
-
-```yaml
-- url: https://github.com/some-org/cool-agent
-  ref: v1.2.3
+```bash
+npm ci                 # install deps (Node ^24.15.0)
+npm test               # node:test unit checks for the build script
+npm run build          # fetch + validate + write catalog.json (needs network)
+npm run format:check   # prettier check on **/*.md (what CI runs)
+task lint              # markdownlint on **/*.md
 ```
 
-Omitting `ref` tracks the agent's newest GitHub release (falling back to the newest tag only if it has none). Pin third-party agents to a tag or SHA when practical.
+Run the full set before any PR: `npm test`, `npm run build`, `task lint`,
+`npm run format:check`.
 
-## Testing Guidelines
+## Conventions
 
-`npm test` runs the `node:test` unit checks for the build script (currently the ref/semver resolution logic). Treat `npm test`, `npm run build`, `task lint`, and `npm run format:check` as the required validation set. After changing `agents.yaml` or the build script, run `npm run build` and review the generated `catalog.json` diff for expected source, version, and sorting changes.
+- JavaScript is ESM (`"type": "module"`): two-space indent, single quotes,
+  semicolons — match `scripts/build-catalog.mjs`. Keep script changes
+  all-or-nothing: validation failures must abort catalog writes.
+- `ref` semantics: omitted or `latest` tracks the newest GitHub **release**;
+  it falls back to the newest tag only when the repo has no releases at all,
+  so a tag pushed without a release never enters the catalog. Pin third-party
+  agents you don't control to an explicit tag or SHA.
+- Markdown is gated by prettier and markdownlint — after editing docs run
+  `task lint:fix` and `npm run format`.
 
-## Commit & Pull Request Guidelines
+## CI & gotchas
 
-Recent history uses Conventional Commits such as `feat: Add grafana and mock agent`, `refactor(ci): ...`, and `chore(catalog): rebuild catalog.json [skip ci]`. Follow that pattern. PRs should describe the catalog change, link the upstream agent repo or issue, note whether `catalog.json` was regenerated, and include validation commands run locally.
-
+- `ci.yml` (PRs + pushes to main): markdownlint + prettier `--check`. Both
+  must pass.
+- `build-catalog.yml`: rebuilds `catalog.json` on pushes to `agents.yaml`, the
+  build script, or package files, and on manual dispatch, then opens/updates
+  an automated rebuild PR. **No cron** — upstream `agent.yaml` bumps don't
+  roll in on their own; dispatch the workflow to refresh.
+- `npm run build` hits the GitHub API (60 req/hr tokenless; set `GITHUB_TOKEN`
+  to lift to 5000/hr) and jsdelivr for the schema. Validate against a fork
+  with `ADL_SCHEMA_URL=https://.../schema.json npm run build`.
+- Consumers pull `catalog.json` via jsdelivr `@main`, whose cache window is up
+  to ~12h — a merged change isn't instantly live.
+- Conventional Commits (e.g. `feat: Add grafana and mock agent`,
+  `chore(catalog): rebuild catalog.json [skip ci]`). PRs should describe the
+  catalog change, link the upstream repo or issue, note whether `catalog.json`
+  was regenerated, and list the validation commands run.
