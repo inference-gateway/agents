@@ -46,7 +46,7 @@ Shape:
 ```json
 {
   "version": 1,
-  "updated": "2026-05-25T00:00:00Z",
+  "updated": "2026-05-25T00:00:00.000Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -56,7 +56,7 @@ Shape:
       "_source": {
         "url": "https://github.com/...",
         "ref": "v1.2.3",
-        "fetchedAt": "..."
+        "fetchedAt": "2026-05-25T00:00:00.000Z"
       }
     }
   ]
@@ -66,12 +66,24 @@ Shape:
 Each agent doc is a pure ADL manifest plus a non-schema `_source` block recording where the
 aggregator pulled it from.
 
+Both timestamps are `Date.toISOString()` values (e.g. `2026-05-25T00:00:00.000Z`), and neither
+is simply "the time of the last build":
+
+- `updated` is the time of the last build that actually changed catalog content. A rebuild that
+  finds no upstream change leaves it as is.
+- `_source.fetchedAt` is carried forward for an entry whose content is unchanged, so it marks
+  when that entry's current content first entered the catalog - not the most recent fetch of it.
+
 ## Local build
 
 ```bash
 npm install
-npm run build      # writes catalog.json
+npm run build      # writes catalog.json, but only when its content changed
 ```
+
+When nothing changed, the script logs
+`Catalog unchanged; leaving <path>/catalog.json untouched` and exits 0 without writing - so
+running it twice in a row leaves the file untouched the second time.
 
 The build script:
 
@@ -80,7 +92,10 @@ The build script:
    newest tag) and fetches `agent.yaml` from `raw.githubusercontent.com/<owner>/<repo>/<ref>/agent.yaml`.
 3. Validates against the ADL JSON Schema (`adl/schema/v1/schema.json`) via Ajv.
 4. Rejects duplicate `metadata.name` collisions.
-5. Sorts by `metadata.name` and writes `catalog.json`.
+5. Sorts by `metadata.name`, then compares the result against the previous `catalog.json`
+   ignoring timestamps (`carryTimestamps` / `withoutTimestamps`) and writes the file only if an
+   entry was added, removed, or changed. A run where only the timestamps would move skips the
+   write entirely.
 
 Override the ADL schema location with `ADL_SCHEMA_URL=...` if needed (for testing against a fork).
 
@@ -90,3 +105,6 @@ The workflow runs on `push` to `main` touching `agents.yaml` / the build script 
 and on manual `workflow_dispatch`. There is no cron, so an upstream `agent.yaml` version bump
 does not roll into the catalog on its own - trigger the workflow manually (or push a change
 here) to pick it up.
+
+A run that finds no upstream change leaves `catalog.json` untouched, so no `catalog/update` PR is
+opened - a dispatch with no resulting PR means there was nothing new to pull in.
