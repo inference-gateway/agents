@@ -13,11 +13,13 @@ agent-facing change made here is editing `agents.yaml`.
 
 - `agents.yaml` — the only file humans edit. Entries are `{ url, ref }`
   pointing at public GitHub repos that ship an `agent.yaml` at their root.
-- `scripts/build-catalog.mjs` — resolves each ref (via the GitHub releases
-  API), fetches `agent.yaml` from raw.githubusercontent.com, validates via Ajv
+- `scripts/build-catalog.mjs` — resolves each ref (the `latest` sentinel via
+  the GitHub releases/tags API; explicit refs are used verbatim), fetches `agent.yaml` from raw.githubusercontent.com, validates via Ajv
   against the ADL JSON Schema, rejects duplicate `metadata.name`, sorts by
   name, and writes `catalog.json`. Any failure aborts the write — the catalog
-  is all-or-nothing. Unit checks live in `scripts/build-catalog.test.mjs`.
+  is all-or-nothing. Each agent doc gets a non-schema
+  `_source: { url, ref, fetchedAt }` block (`ref` is the resolved ref). Unit
+  checks live in `scripts/build-catalog.test.mjs`.
 - `catalog.json` — generated and committed. Never hand-edit; regenerate with
   `npm run build` and review the diff.
 
@@ -27,8 +29,10 @@ agent-facing change made here is editing `agents.yaml`.
 npm ci                 # install deps (Node ^24.15.0)
 npm test               # node:test unit checks for the build script
 npm run build          # fetch + validate + write catalog.json (needs network)
+npm run format         # prettier on **/*.md (write)
 npm run format:check   # prettier check on **/*.md (what CI runs)
 task lint              # markdownlint on **/*.md
+task lint:fix          # markdownlint with --fix
 ```
 
 Run the full set before any PR: `npm test`, `npm run build`, `task lint`,
@@ -46,12 +50,22 @@ Run the full set before any PR: `npm test`, `npm run build`, `task lint`,
 - Markdown is gated by prettier and markdownlint — after editing docs run
   `task lint:fix` and `npm run format`.
 
+### Code Readability
+
+- Write self-explanatory code: clear names and small, single-purpose functions carry the intent.
+  If a block needs a comment to be understood, extract it into a well-named function or variable.
+- No inline comments inside function bodies.
+- Doc comments on functions and types are at most 5 lines: what it does and why, not how.
+- No comments above modules, packages, or files.
+- Tool directives are not comments and stay where the tool needs them (lint suppressions, build
+  tags, compiler pragmas, code generation markers).
+
 ## CI & gotchas
 
 - `ci.yml` (PRs + pushes to main): markdownlint + prettier `--check`. Both
   must pass.
 - `build-catalog.yml`: rebuilds `catalog.json` on pushes to `agents.yaml`, the
-  build script, or package files, and on manual dispatch, then opens/updates
+  build script, package files, or the workflow itself, and on manual dispatch, then opens/updates
   an automated rebuild PR. **No cron** — upstream `agent.yaml` bumps don't
   roll in on their own; dispatch the workflow to refresh.
 - `npm run build` hits the GitHub API (60 req/hr tokenless; set `GITHUB_TOKEN`
