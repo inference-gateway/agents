@@ -3,7 +3,7 @@
 This repo is the source list and build pipeline for the Inference Gateway
 agents catalog — the data behind https://registry.inference-gateway.com. It
 contains **no agent implementations**. Each agent's ADL `agent.yaml` lives in
-its own GitHub repo and is the source of truth; requests like "add a tool to
+its own GitHub repo and is the source of truth - requests like "add a tool to
 agent X" or "fix agent X's prompt" belong in that upstream repo. The only
 agent-facing change made here is editing `agents.yaml`.
 
@@ -14,13 +14,13 @@ agent-facing change made here is editing `agents.yaml`.
 - `agents.yaml` — the only file humans edit. Entries are `{ url, ref }`
   pointing at public GitHub repos that ship an `agent.yaml` at their root.
 - `scripts/build-catalog.mjs` — resolves each ref (the `latest` sentinel via
-  the GitHub releases/tags API; explicit refs are used verbatim), fetches `agent.yaml` from raw.githubusercontent.com, validates via Ajv
+  the GitHub releases/tags API, explicit refs are used verbatim), fetches `agent.yaml` from raw.githubusercontent.com, validates via Ajv
   against the ADL JSON Schema, rejects duplicate `metadata.name`, sorts by
   name, and writes `catalog.json`. Any failure aborts the write — the catalog
   is all-or-nothing. Each agent doc gets a non-schema
   `_source: { url, ref, fetchedAt }` block (`ref` is the resolved ref). Unit
   checks live in `scripts/build-catalog.test.mjs`.
-- `catalog.json` — generated and committed. Never hand-edit; regenerate with
+- `catalog.json` — generated and committed. Never hand-edit - regenerate with
   `npm run build` and review the diff.
 
 ## Commands
@@ -43,8 +43,8 @@ Run the full set before any PR: `npm test`, `npm run build`, `task lint`,
 - JavaScript is ESM (`"type": "module"`): two-space indent, single quotes,
   semicolons — match `scripts/build-catalog.mjs`. Keep script changes
   all-or-nothing: validation failures must abort catalog writes.
-- `ref` semantics: omitted or `latest` tracks the newest GitHub **release**;
-  it falls back to the newest tag only when the repo has no releases at all,
+- `ref` semantics: omitted or `latest` tracks the newest GitHub **release**.
+  It falls back to the newest tag only when the repo has no releases at all,
   so a tag pushed without a release never enters the catalog. Pin third-party
   agents you don't control to an explicit tag or SHA.
 - Markdown is gated by prettier and markdownlint — after editing docs run
@@ -59,6 +59,8 @@ Run the full set before any PR: `npm test`, `npm run build`, `task lint`,
 - No comments above modules, packages, or files.
 - Tool directives are not comments and stay where the tool needs them (lint suppressions, build
   tags, compiler pragmas, code generation markers).
+- No semicolons in documentation prose (Markdown files, doc comments): split the sentence or use
+  a dash instead.
 
 ## CI & gotchas
 
@@ -67,8 +69,8 @@ Run the full set before any PR: `npm test`, `npm run build`, `task lint`,
 - `build-catalog.yml`: rebuilds `catalog.json` on pushes to `agents.yaml`, the
   build script, package files, or the workflow itself, and on manual dispatch, then opens/updates
   an automated rebuild PR. **No cron** — upstream `agent.yaml` bumps don't
-  roll in on their own; dispatch the workflow to refresh.
-- `npm run build` hits the GitHub API (60 req/hr tokenless; set `GITHUB_TOKEN`
+  roll in on their own - dispatch the workflow to refresh.
+- `npm run build` hits the GitHub API (60 req/hr tokenless, set `GITHUB_TOKEN`
   to lift to 5000/hr) and jsdelivr for the schema. Validate against a fork
   with `ADL_SCHEMA_URL=https://.../schema.json npm run build`.
 - Consumers pull `catalog.json` via jsdelivr `@main`, whose cache window is up
