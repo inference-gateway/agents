@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.5](https://github.com/inference-gateway/agents/compare/v0.1.4...v0.1.5) (2026-11-10)
+
+### 👷 CI
+
+* **release:** label issues and PRs shipped in an rc with rc ([#111](https://github.com/inference-gateway/agents/issues/111)) ([c7ee347](https://github.com/inference-gateway/agents/commit/c7ee347a40715d8215ff9a0bdea21647cc6a3715))
+
+### 📚 Documentation
+
+* **agents:** add code readability guidelines ([#91](https://github.com/inference-gateway/agents/issues/91)) ([e851ec0](https://github.com/inference-gateway/agents/commit/e851ec058b3243c3cd536eff9eeacdd7f47bce59))
+* **agents:** add code readability guidelines ([#98](https://github.com/inference-gateway/agents/issues/98)) ([7de6462](https://github.com/inference-gateway/agents/commit/7de6462fbf345249ff26c074b6ab8c3a9fdb1913))
+
+### 🔧 Miscellaneous
+
+* **catalog:** rebuild catalog.json [skip ci] ([#103](https://github.com/inference-gateway/agents/issues/103)) ([4381cd5](https://github.com/inference-gateway/agents/commit/4381cd5de946a19775a3dd141efbb4ad2d0907b8))
+* **catalog:** rebuild catalog.json [skip ci] ([#108](https://github.com/inference-gateway/agents/issues/108)) ([c9c35e5](https://github.com/inference-gateway/agents/commit/c9c35e59b84003a4c4cc736698b99a8515f70dd0))
+* **deps:** bump actions/create-github-app-token ([#106](https://github.com/inference-gateway/agents/issues/106)) ([b3beacd](https://github.com/inference-gateway/agents/commit/b3beacd675d822f83c92c6b6bce97ed219f8d5a4))
+* **deps:** bump actions/setup-node ([#101](https://github.com/inference-gateway/agents/issues/101)) ([40dbe02](https://github.com/inference-gateway/agents/commit/40dbe0243e2ee0b5f5fb5ab5c8022ac4c6504455))
+* **deps:** bump claude-code 2.1.280 -> 2.1.283 ([#92](https://github.com/inference-gateway/agents/issues/92)) ([ec3ed44](https://github.com/inference-gateway/agents/commit/ec3ed44eb6b0a7f690672d887c8017e2c3930724))
+* **deps:** bump claude-code 2.1.283 -> 2.1.285 ([#97](https://github.com/inference-gateway/agents/issues/97)) ([d242f3c](https://github.com/inference-gateway/agents/commit/d242f3c05a7ccd254039b3d6eb23ad31ed63a073))
+* **deps:** bump claude-code 2.1.285 -> 2.1.289 ([#99](https://github.com/inference-gateway/agents/issues/99)) ([d500613](https://github.com/inference-gateway/agents/commit/d5006138e8eb1dda4ebbe10d7943109dfc33d483))
+* **deps:** bump claude-code 2.1.289 -> 2.1.296 ([#104](https://github.com/inference-gateway/agents/issues/104)) ([da2f386](https://github.com/inference-gateway/agents/commit/da2f386e7f54d0ce56428935b1a5b3d750920d1e))
+* **deps:** bump claude-code 2.1.296 -> 2.1.308 ([#109](https://github.com/inference-gateway/agents/issues/109)) ([93ba84b](https://github.com/inference-gateway/agents/commit/93ba84b6b3e7f1036575b14c6b82d63c932c080e))
+* **deps:** bump fast-uri from 3.1.7 to 3.1.8 ([#95](https://github.com/inference-gateway/agents/issues/95)) ([5098a45](https://github.com/inference-gateway/agents/commit/5098a45ad31cba90ecb4d609bf3e5ed0944532b2))
+* **deps:** bump fast-uri from 3.1.8 to 3.1.9 ([#110](https://github.com/inference-gateway/agents/issues/110)) ([ee8a063](https://github.com/inference-gateway/agents/commit/ee8a063fd14083248545cc176066b3e469cfcef6))
+* **deps:** bump infer CLI v0.208.0 -> v0.218.0 ([#93](https://github.com/inference-gateway/agents/issues/93)) ([8699f64](https://github.com/inference-gateway/agents/commit/8699f6475340376e454b790528d8062db14ff922))
+* **deps:** bump infer CLI v0.218.0 -> v0.221.1 ([#96](https://github.com/inference-gateway/agents/issues/96)) ([30a0e68](https://github.com/inference-gateway/agents/commit/30a0e6883b13a5c380c2782c6e25a1e5232b65ff))
+* **deps:** bump infer CLI v0.221.1 -> v0.226.0 ([#100](https://github.com/inference-gateway/agents/issues/100)) ([dc64deb](https://github.com/inference-gateway/agents/commit/dc64debfb228506dc60cda88c94f3656fbd84416))
+* **deps:** bump infer CLI v0.226.0 -> v0.231.1 ([#105](https://github.com/inference-gateway/agents/issues/105)) ([dfdacc2](https://github.com/inference-gateway/agents/commit/dfdacc2ae41cd66af56e79f0169535fd1487db25))
+* **deps:** bump js-yaml from 5.4.3 to 5.5.0 in the npm group ([#107](https://github.com/inference-gateway/agents/issues/107)) ([5dc9bbe](https://github.com/inference-gateway/agents/commit/5dc9bbe53347f17ae7531604358d877a3c483ade))
+* **deps:** bump prettier from 3.9.8 to 3.9.9 in the npm group ([#94](https://github.com/inference-gateway/agents/issues/94)) ([619d47d](https://github.com/inference-gateway/agents/commit/619d47def134f17934b75c11299073e53783aa6a))
+* **deps:** bump the npm group with 2 updates ([#102](https://github.com/inference-gateway/agents/issues/102)) ([f456939](https://github.com/inference-gateway/agents/commit/f4569397342c0a34517aa48f72ddb5c524cbc174))
+
 ## [0.1.4](https://github.com/inference-gateway/agents/compare/v0.1.3...v0.1.4) (2026-09-26)
 
 ### 👷 CI

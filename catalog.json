@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-10-20T20:09:16.298Z",
+  "updated": "2026-11-10T00:45:24Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -2492,5 +2492,6 @@
         "fetchedAt": "2026-10-20T20:09:16.298Z"
       }
     }
-  ]
+  ],
+  "release": "0.1.5"
 }
