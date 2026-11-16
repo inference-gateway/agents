@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-11-10T00:45:24Z",
+  "updated": "2026-11-16T16:07:17.586Z",
   "agents": [
     {
       "apiVersion": "adl.inference-gateway.com/v1",
@@ -8,7 +8,7 @@
       "metadata": {
         "name": "browser-agent",
         "description": "AI agent for browser automation and web testing using Playwright",
-        "version": "0.8.19"
+        "version": "0.8.20"
       },
       "spec": {
         "capabilities": {
@@ -547,10 +547,10 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/browser-agent",
-            "version": "1.26.8",
+            "version": "1.27.3",
             "vendor": {
               "deps": [
-                "github.com/mxschmitt/playwright-go@v0.6201.1",
+                "github.com/mxschmitt/playwright-go@v0.6401.0",
                 "github.com/jonfriesen/playwright-go-stealth@v0.0.3",
                 "github.com/stretchr/testify@v1.12.1"
               ],
@@ -690,8 +690,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/browser-agent",
-        "ref": "v0.8.19",
-        "fetchedAt": "2026-10-20T20:09:16.298Z"
+        "ref": "v0.8.20",
+        "fetchedAt": "2026-11-16T16:07:17.586Z"
       }
     },
     {
@@ -700,7 +700,7 @@
       "metadata": {
         "name": "documentation-agent",
         "description": "A2A agent server that provides Context7-style documentation capabilities for your agents",
-        "version": "0.3.20"
+        "version": "0.3.21"
       },
       "spec": {
         "capabilities": {
@@ -831,7 +831,7 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/documentation-agent",
-            "version": "1.26.8",
+            "version": "1.27.3",
             "vendor": {
               "deps": [
                 "github.com/go-resty/resty/v2@v2.17.2"
@@ -935,8 +935,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/documentation-agent",
-        "ref": "v0.3.20",
-        "fetchedAt": "2026-10-20T20:09:16.298Z"
+        "ref": "v0.3.21",
+        "fetchedAt": "2026-11-16T16:07:17.586Z"
       }
     },
     {
@@ -945,7 +945,7 @@
       "metadata": {
         "name": "google-calendar-agent",
         "description": "A Google Calendar A2A agent for AI assistants to interact with Google Calendar",
-        "version": "0.5.22"
+        "version": "0.5.23"
       },
       "spec": {
         "capabilities": {
@@ -1290,10 +1290,10 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/google-calendar-agent",
-            "version": "1.26.8",
+            "version": "1.27.3",
             "vendor": {
               "deps": [
-                "google.golang.org/api@v0.301.0"
+                "google.golang.org/api@v0.314.0"
               ],
               "devdeps": []
             }
@@ -1411,8 +1411,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/google-calendar-agent",
-        "ref": "v0.5.22",
-        "fetchedAt": "2026-10-20T20:09:16.298Z"
+        "ref": "v0.5.23",
+        "fetchedAt": "2026-11-16T16:07:17.586Z"
       }
     },
     {
@@ -1421,7 +1421,7 @@
       "metadata": {
         "name": "grafana-agent",
         "description": "A2A agent server for grafana dashboards automation tasks",
-        "version": "0.3.20"
+        "version": "0.3.21"
       },
       "spec": {
         "capabilities": {
@@ -1762,7 +1762,7 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/grafana-agent",
-            "version": "1.26.8",
+            "version": "1.27.3",
             "vendor": {
               "deps": [
                 "github.com/stretchr/testify@v1.12.1"
@@ -1833,8 +1833,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/grafana-agent",
-        "ref": "v0.3.20",
-        "fetchedAt": "2026-10-20T20:09:16.298Z"
+        "ref": "v0.3.21",
+        "fetchedAt": "2026-11-16T16:07:17.586Z"
       }
     },
     {
@@ -1843,7 +1843,7 @@
       "metadata": {
         "name": "mock-agent",
         "description": "A2A agent server for mocking and testing. Uses a mock LLM client - no API keys required!",
-        "version": "0.5.2"
+        "version": "0.5.3"
       },
       "spec": {
         "capabilities": {
@@ -2115,11 +2115,11 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/mock-agent",
-            "version": "1.26.8",
+            "version": "1.27.3",
             "vendor": {
               "deps": [
-                "github.com/inference-gateway/sdk@v1.42.0",
-                "go.opentelemetry.io/otel/sdk@v1.46.0"
+                "github.com/inference-gateway/sdk@v1.45.1",
+                "go.opentelemetry.io/otel/sdk@v1.47.0"
               ],
               "devdeps": []
             }
@@ -2225,8 +2225,8 @@
       },
       "_source": {
         "url": "https://github.com/inference-gateway/mock-agent",
-        "ref": "v0.5.2",
-        "fetchedAt": "2026-10-20T20:09:16.298Z"
+        "ref": "v0.5.3",
+        "fetchedAt": "2026-11-16T16:07:17.586Z"
       }
     },
     {
@@ -2235,7 +2235,7 @@
       "metadata": {
         "name": "n8n-agent",
         "description": "A2A agent server specialized in generating and automating n8n workflows",
-        "version": "0.3.20"
+        "version": "0.3.21"
       },
       "spec": {
         "capabilities": {
@@ -2404,7 +2404,7 @@
         "language": {
           "go": {
             "module": "github.com/inference-gateway/n8n-agent",
-            "version": "1.26.8",
+            "version": "1.27.3",
             "vendor": {
               "deps": [],
               "devdeps": []
@@ -2482,16 +2482,15 @@
             }
           },
           "deps": [
-            "deno@^2.7.14"
+            "deno@^2.9.8"
           ]
         }
       },
       "_source": {
         "url": "https://github.com/inference-gateway/n8n-agent",
-        "ref": "v0.3.20",
-        "fetchedAt": "2026-10-20T20:09:16.298Z"
+        "ref": "v0.3.21",
+        "fetchedAt": "2026-11-16T16:07:17.586Z"
       }
     }
-  ],
-  "release": "0.1.5"
+  ]
 }
