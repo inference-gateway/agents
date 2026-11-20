@@ -21,7 +21,11 @@ agent-facing change made here is editing `agents.yaml`.
   `_source: { url, ref, fetchedAt }` block (`ref` is the resolved ref). Unit
   checks live in `scripts/build-catalog.test.mjs`.
 - `catalog.json` — generated and committed. Never hand-edit - regenerate with
-  `npm run build` and review the diff.
+  `npm run build` and review the diff. The build writes only when content
+  changed: it compares against the previous catalog ignoring `updated` /
+  `fetchedAt` timestamps (unchanged entries keep their old
+  `_source.fetchedAt`), so an empty diff after `npm run build` means nothing
+  changed upstream - not a failure.
 
 ## Commands
 
